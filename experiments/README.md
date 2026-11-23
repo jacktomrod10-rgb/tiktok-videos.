@@ -14,3 +14,19 @@ The analytics team chat judges them. Keep what holds viewers and wins follows, a
 | 2026-11-24-three-genius.mp4 | Fast list of 3 (reuses verified facts) | 35 s | 3 things you use every day that are secretly genius |
 
 Upload copies (≤3.4 MB for the Chrome upload tool) are made at upload time; see `notes/chrome-route.md`.
+
+## Scheduled in TikTok Studio (via Chrome, owner said yes on 23 Nov), all on Tue 24 Nov, London time
+
+| Time | Video |
+| --- | --- |
+| 07:00 | plane-short |
+| 09:00 | three-genius |
+| 11:00 | in-this-town |
+| 13:00 | The Pennys Day 2 (Metricool, automatic) |
+| 15:00 | glass-puzzle |
+| 17:00 | what-if-earth |
+| 19:00 | Everyday Genius explainer (Metricool, automatic) |
+| 21:30 | zombie-town (Part 1) |
+
+Zombie Town's caption promises that the most-voted option decides Part 2, so if it gets votes, make Part 2 on
+Wed 25 Nov. Count A/B/C with `series/pennys/tally.py` on its comments (Windsor `tiktok_organic`, filter by video id).
