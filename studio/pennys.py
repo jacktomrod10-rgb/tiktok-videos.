@@ -14,6 +14,19 @@ FLOOR, FLOOR_L = (124, 86, 60), (140, 100, 70)
 SOFA, SOFA_D = (214, 160, 70), (186, 134, 52)
 OPT_COLS = {"A": (61, 200, 190), "B": (255, 120, 160), "C": (255, 200, 70)}
 NARRATOR = "bm_fable"   # the owner picked this British male voice for The Pennys
+CAST = {
+    "narrator": {"voice": "bm_fable", "lang": "en-gb", "speed": 1.08},
+    "dave":  {"voice": "bm_george", "lang": "en-gb", "speed": 1.0, "pitch": 0.86},
+    "sue":   {"voice": "bf_emma", "lang": "en-gb", "speed": 1.06},
+    "ellie": {"voice": "bf_isabella", "lang": "en-gb", "speed": 1.06, "pitch": 1.06},
+    "alfie": {"voice": "bf_lily", "lang": "en-gb", "speed": 1.12, "pitch": 1.38},
+}
+SPEAKER_COLOURS = {"dave": (150, 190, 255), "sue": (255, 160, 190), "ellie": (200, 170, 255), "alfie": (150, 230, 160)}
+
+def talkers(V, t):
+    """{character: mouth openness} for whoever is speaking at time t."""
+    sp, amp = V.speaking(t)
+    return {sp: amp} if sp in ("dave", "sue", "ellie", "alfie") else {}
 
 # ---------------- helpers ----------------
 OUT = (46, 32, 40)          # outline colour
@@ -122,7 +135,7 @@ def jar(p, cx, yb, sc=1.0, level=0.1, label=True):
         p.text((cx, yb - h * 0.485), "HOLS", f2("dm", max(8, int(20 * sc))), INK)
 
 # ---------------- faces ----------------
-def _face(p, x, y, r, mood, t, blink_seed=0.0, glasses=False, iris=(90, 70, 50)):
+def _face(p, x, y, r, mood, t, blink_seed=0.0, glasses=False, iris=(90, 70, 50), talk=0.0):
     blink = ((t + blink_seed) % 3.7) < 0.13
     ex, ey = r * 0.34, y - r * 0.06
     ew, eh = r * 0.17, r * 0.21
@@ -166,7 +179,12 @@ def _face(p, x, y, r, mood, t, blink_seed=0.0, glasses=False, iris=(90, 70, 50))
     # mouth
     my, mw = y + r * .44, r * .3
     lw = max(3, r * .055)
-    if mood == "happy":
+    if talk > 0.08:
+        o = mw * (0.25 + 0.75 * min(1.0, talk))
+        p.ell([x - mw * .62, my - o * .35, x + mw * .62, my + o * .9], fill=(110, 40, 50), outline=OUT, width=lw)
+        p.ell([x - mw * .35, my + o * .35, x + mw * .35, my + o * .85], fill=(230, 110, 120))
+        p.rect([x - mw * .45, my - o * .3, x + mw * .45, my - o * .12], fill=WHITE)
+    elif mood == "happy":
         p.arc([x - mw, my - mw * .8, x + mw, my + mw * .45], 20, 160, OUT, lw)
     elif mood == "grin":
         p.d.chord([(x - mw) * S, (my - mw * .55) * S, (x + mw) * S, (my + mw * .8) * S], 0, 180, fill=(110, 40, 50), outline=OUT, width=int(lw * S * .8))
@@ -181,12 +199,12 @@ def _face(p, x, y, r, mood, t, blink_seed=0.0, glasses=False, iris=(90, 70, 50))
     else:
         p.arc([x - mw * .6, my - mw * .2, x + mw * .6, my + mw * .3], 30, 150, OUT, lw)
 
-def _head(p, x, y, r, mood, t, seed, glasses=False, ears=True, iris=(90, 70, 50)):
+def _head(p, x, y, r, mood, t, seed, glasses=False, ears=True, iris=(90, 70, 50), talk=0.0):
     if ears:
         for sx in (-1, 1):
             ocircle(p, x + sx * r * .96, y + r * .08, r * .2, SKIN, ow=4, shaded=False)
     ocircle(p, x, y, r, SKIN, ow=5)
-    _face(p, x, y, r, mood, t, seed, glasses, iris)
+    _face(p, x, y, r, mood, t, seed, glasses, iris, talk)
 
 def _body(p, x, yf, s, shirt, trousers, torso_w, torso_h, leg_h, legs_skin=False, wave=0.0, t=0.0, hold=None,
           shoe=(60, 52, 52), collar=None):
@@ -235,7 +253,7 @@ def _body(p, x, yf, s, shirt, trousers, torso_w, torso_h, leg_h, legs_skin=False
         ocircle(p, r1[0], r1[1], aw * .6, SKIN, ow=4, shaded=False)
     return top
 
-def dave(p, x, yf, s=1.0, mood="happy", t=0.0, wave=0.0, hold=None):
+def dave(p, x, yf, s=1.0, mood="happy", t=0.0, wave=0.0, hold=None, talk=0.0):
     bob = math.sin(t * 2.0) * 4 * s
     blue = (64, 96, 160)
     top = _body(p, x, yf, s, (225, 225, 215), blue, 250 * s, 240 * s, 150 * s, wave=wave, t=t, hold=hold, collar=(200, 200, 190))
@@ -253,7 +271,7 @@ def dave(p, x, yf, s=1.0, mood="happy", t=0.0, wave=0.0, hold=None):
     for sx in (-1, 1):   # side tufts behind
         p.ell([x + sx * hr * .9 - hr * .2, hy - hr * .38, x + sx * hr * .9 + hr * .2, hy + hr * .32], fill=OUT)
         p.ell([x + sx * hr * .9 - hr * .16, hy - hr * .34, x + sx * hr * .9 + hr * .16, hy + hr * .28], fill=(110, 75, 50))
-    _head(p, x, hy, hr, mood, t, 0.3, ears=False, iris=(80, 110, 150))
+    _head(p, x, hy, hr, mood, t, 0.3, ears=False, iris=(80, 110, 150), talk=talk)
     p.arc([x - hr * .55, hy - hr * .85, x - hr * .05, hy - hr * .45], 200, 300, tint(SKIN, .5), max(3, hr * .06))   # bald shine
     p.rr([x - hr * .4 - 3, hy + hr * .22 - 3, x + hr * .4 + 3, hy + hr * .38 + 3], hr * .1, fill=OUT)
     p.rr([x - hr * .4, hy + hr * .22, x + hr * .4, hy + hr * .38], hr * .08, fill=(110, 75, 50))   # moustache
@@ -261,7 +279,7 @@ def dave(p, x, yf, s=1.0, mood="happy", t=0.0, wave=0.0, hold=None):
         for i in range(3):
             p.text((x + hr * 1.1 + i * 26 * s, hy - hr * .9 - i * 30 * s), "z", f2("anton", int(40 * s)), WHITE)
 
-def sue(p, x, yf, s=1.0, mood="happy", t=0.0, wave=0.0, hold=None):
+def sue(p, x, yf, s=1.0, mood="happy", t=0.0, wave=0.0, hold=None, talk=0.0):
     bob = math.sin(t * 2.0 + 1) * 4 * s
     pink = (232, 116, 150)
     top = _body(p, x, yf, s, pink, (70, 70, 96), 200 * s, 220 * s, 150 * s, wave=wave, t=t, hold=hold)
@@ -281,12 +299,12 @@ def sue(p, x, yf, s=1.0, mood="happy", t=0.0, wave=0.0, hold=None):
         p.circle(x + math.cos(a) * hr * 1.02, hy + math.sin(a) * hr * .95 + hr * .2, hr * .35, fill=hair_d if k % 2 else hair)
     for sx in (-1, 1):
         p.circle(x + sx * hr * .95, hy + hr * .5, hr * .31, fill=hair)
-    _head(p, x, hy, hr, mood, t, 1.3, glasses=True, ears=False, iris=(70, 130, 90))
+    _head(p, x, hy, hr, mood, t, 1.3, glasses=True, ears=False, iris=(70, 130, 90), talk=talk)
     for k in range(5):
         p.circle(x - hr * .55 + k * hr * .28, hy - hr * .8, hr * .27, fill=hair if k % 2 else hair_d)
     p.circle(x + hr * .35, hy - hr * .9, hr * .1, fill=tint(hair, .4))
 
-def ellie(p, x, yf, s=1.0, mood="neutral", t=0.0, wave=0.0, hold="phone"):
+def ellie(p, x, yf, s=1.0, mood="neutral", t=0.0, wave=0.0, hold="phone", talk=0.0):
     bob = math.sin(t * 2.0 + 2) * 3 * s
     hr = 72 * s
     torso_w, torso_h, leg_h = 170 * s, 200 * s, 160 * s
@@ -300,11 +318,11 @@ def ellie(p, x, yf, s=1.0, mood="neutral", t=0.0, wave=0.0, hold="phone"):
     p.rr([x - 50 * s, top + 120 * s, x + 50 * s, top + 175 * s], 18 * s, fill=shade(purple, .85))   # hoodie pocket
     for sx in (-1, 1):
         p.line([(x + sx * 16 * s, top + 4), (x + sx * 20 * s, top + 70 * s)], WHITE, 5 * s)
-    _head(p, x, hy, hr, mood, t, 2.1, iris=(110, 80, 60))
+    _head(p, x, hy, hr, mood, t, 2.1, iris=(110, 80, 60), talk=talk)
     p.d.chord([(x - hr * 1.04) * S, (hy - hr * 1.08) * S, (x + hr * 1.04) * S, (hy + hr * .3) * S], 180, 360, fill=hair)
     p.arc([x - hr * .7, hy - hr * .95, x + hr * .1, hy - hr * .3], 200, 260, tint(hair, .3), max(3, hr * .06))
 
-def alfie(p, x, yf, s=1.0, mood="grin", t=0.0, wave=0.0, hold=None):
+def alfie(p, x, yf, s=1.0, mood="grin", t=0.0, wave=0.0, hold=None, talk=0.0):
     bob = abs(math.sin(t * 3.0)) * 8 * s
     hr = 70 * s
     green = (88, 178, 100)
@@ -317,7 +335,7 @@ def alfie(p, x, yf, s=1.0, mood="grin", t=0.0, wave=0.0, hold=None):
     for k in range(7):
         bx = x - hr * .85 + k * hr * .28
         p.poly([(bx - hr * .2, hy - hr * .55), (bx + hr * .05, hy - hr * 1.25), (bx + hr * .3, hy - hr * .55)], blond if k % 2 else shade(blond, .9))
-    _head(p, x, hy, hr, mood, t, 0.7, iris=(80, 120, 170))
+    _head(p, x, hy, hr, mood, t, 0.7, iris=(80, 120, 170), talk=talk)
     p.d.chord([(x - hr) * S, (hy - hr * 1.0) * S, (x + hr) * S, (hy + hr * .06) * S], 180, 360, fill=blond)
     # koala face on the t-shirt
     kx, ky = x, top + 80 * s
@@ -361,13 +379,14 @@ def crumbs(p, x, yf, s=1.0, mood="happy", t=0.0):
 
 CHARS = {"dave": dave, "sue": sue, "ellie": ellie, "alfie": alfie, "crumbs": crumbs}
 
-def family(p, t, moods=None, yf=1080, sc=0.82, xs=(170, 390, 610, 800, 975)):
+def family(p, t, moods=None, yf=1080, sc=0.82, xs=(170, 390, 610, 800, 975), talk=None):
     m = {"dave": "happy", "sue": "happy", "ellie": "neutral", "alfie": "grin", "crumbs": "happy"}
     m.update(moods or {})
-    sue(p, xs[1], yf, sc, m["sue"], t)
-    dave(p, xs[0], yf, sc, m["dave"], t)
-    ellie(p, xs[2], yf, sc * .95, m["ellie"], t)
-    alfie(p, xs[3], yf, sc * .95, m["alfie"], t)
+    tk = talk or {}
+    sue(p, xs[1], yf, sc, m["sue"], t, talk=tk.get("sue", 0))
+    dave(p, xs[0], yf, sc, m["dave"], t, talk=tk.get("dave", 0))
+    ellie(p, xs[2], yf, sc * .95, m["ellie"], t, talk=tk.get("ellie", 0))
+    alfie(p, xs[3], yf, sc * .95, m["alfie"], t, talk=tk.get("alfie", 0))
     crumbs(p, xs[4], yf, sc * .55, m["crumbs"], t)
 
 # ---------------- overlays ----------------

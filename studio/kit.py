@@ -195,17 +195,33 @@ def ensure_models():
         if not os.path.exists(path) or os.path.getsize(path) < 1_000_000:
             subprocess.run(["curl", "-sL", "-m", "300", "-o", path, url], check=True)
 
-def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, speed=None):
+def _pitch(samples, sr, factor):
+    import soundfile as sf, tempfile
+    with tempfile.TemporaryDirectory() as td:
+        a, b = os.path.join(td, "a.wav"), os.path.join(td, "b.wav")
+        sf.write(a, samples, sr)
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", a, "-af", f"rubberband=pitch={factor}:formant=preserved", b], check=True)
+        out, _ = sf.read(b, dtype="float32")
+    return out
+
+def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, speed=None, cast=None):
+    """lines: str (narrator) or (speaker, text). cast: {speaker: dict(voice, lang, speed, pitch)}."""
     voice, lang, speed = voice or VOICE, lang or VOICE_LANG, speed or VOICE_SPEED
+    cast = cast or {}
     import soundfile as sf
     from kokoro_onnx import Kokoro
     ensure_models()
     k = Kokoro(os.path.join(MODEL_DIR, "kokoro-v1.0.int8.onnx"), os.path.join(MODEL_DIR, "voices-v1.0.bin"))
     chunks, info, t, sr_out = [], [], lead, 24000
-    for i, text in enumerate(lines):
-        samples, sr = k.create(text, voice=voice, speed=speed, lang=lang)
+    for i, item in enumerate(lines):
+        speaker, text = (item if isinstance(item, (tuple, list)) else ("narrator", item))
+        c = cast.get(speaker, {})
+        v, lg, sp, pf = c.get("voice", voice), c.get("lang", lang), c.get("speed", speed), c.get("pitch", 1.0)
+        samples, sr = k.create(text, voice=v, speed=sp, lang=lg)
         sr_out = sr
         samples = np.asarray(samples, dtype=np.float32)
+        if abs(pf - 1.0) > 0.01:
+            samples = _pitch(samples, sr, pf)
         idx = np.where(np.abs(samples) > 0.01)[0]
         if len(idx):
             samples = samples[max(0, idx[0] - int(0.03 * sr)): idx[-1] + int(0.08 * sr)]
@@ -223,8 +239,8 @@ def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, spee
                 if run >= 3 and j - run > 2:
                     pauses.append([round((j - run) / 30, 3), round(j / 30, 3)])
                 run = 0
-        info.append({"i": i, "text": text, "start": round(t, 3), "dur": round(dur, 3),
-                     "phonemes": k.tokenizer.phonemize(text, lang), "env": env, "pauses": pauses})
+        info.append({"i": i, "speaker": speaker, "text": text, "start": round(t, 3), "dur": round(dur, 3),
+                     "phonemes": k.tokenizer.phonemize(text, lg), "env": env, "pauses": pauses})
         chunks += [samples, np.zeros(int(gap * sr), dtype=np.float32)]
         t += dur + gap
     voice = np.concatenate([np.zeros(int(lead * sr_out), dtype=np.float32)] + chunks)
@@ -389,8 +405,8 @@ def build_chunks(display, lines_info, total):
     return [tuple(c) for c in out]
 
 _CAP_CACHE = {}
-def caption_img(words, active=None):
-    key = (" ".join(words), active)
+def caption_img(words, active=None, colour=None):
+    key = (" ".join(words), active, colour)
     if key in _CAP_CACHE: return _CAP_CACHE[key]
     font = _cap_font()
     toks = [(w.replace("*", "").upper(), "*" in w) for w in words]
@@ -414,19 +430,44 @@ def caption_img(words, active=None):
                 d.rounded_rectangle([x - 10, y + bb[1] - 8, x + w + 10, y + bb[3] + 8], radius=16, fill=YEL)
                 d.text((x, y), tk, font=font, fill=INK)
             else:
-                d.text((x, y), tk, font=font, fill=YEL if hl else (255, 255, 255), stroke_width=9, stroke_fill=INK)
+                d.text((x, y), tk, font=font, fill=YEL if hl else (colour or (255, 255, 255)), stroke_width=9, stroke_fill=INK)
             x += w + space
     _CAP_CACHE[key] = img
+    return img
+
+def _title_img(text):
+    """Headline (up to 2 lines) shown under the series tag; *word* = yellow."""
+    font = ImageFont.truetype(ANTON, 54)
+    words = text.split()
+    lines, cur = [], []
+    for w in words:
+        trial = " ".join(x.replace("*", "") for x in cur + [w]).upper()
+        if cur and font.getlength(trial) > 900:
+            lines.append(cur); cur = []
+        cur.append(w)
+    lines.append(cur)
+    lines = lines[:2]
+    img = Image.new("RGBA", (W, 64 * len(lines) + 16), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    for li, ln in enumerate(lines):
+        toks = [(w.replace("*", "").upper(), "*" in w) for w in ln]
+        total = sum(font.getlength(tk) for tk, _ in toks) + 16 * (len(toks) - 1)
+        x = (W - total) / 2
+        for tk, hl in toks:
+            d.text((x, li * 64), tk, font=font, fill=YEL if hl else WHITE, stroke_width=6, stroke_fill=INK)
+            x += font.getlength(tk) + 16
     return img
 
 # ---------------- the video ----------------
 class Video:
     def __init__(self, slug, lines, display, episode=1, series=SERIES, voice=None, voice_lang=None,
-                 music="pad", camera=True, vignette=True):
+                 music="pad", camera=True, vignette=True, cast=None, speaker_colours=None, title=None):
         assert len(lines) == len(display), "lines and display must have the same count"
         self.slug, self.lines, self.display, self.episode, self.series = slug, lines, display, episode, series
         self.voice, self.voice_lang = voice, voice_lang
         self.music, self.camera, self.vignette = music, camera, vignette
+        self.cast, self.speaker_colours = cast or {}, speaker_colours or {}
+        self.title = title          # persistent headline under the series tag (explainers)
         self.cues = []            # (seconds, kind) sound effects; scene changes get a whoosh automatically
         self.fixed_fns = []       # drawn in the top band (y < 330), not moved by the camera
         self._vig = None
@@ -454,6 +495,19 @@ class Video:
         """Decorator: fn(L) returns [(seconds, kind), ...] sound cues, computed from the voice timing."""
         self.cue_fn = fn
         return fn
+
+    def speaking(self, t):
+        """(speaker, loudness 0..1) for the line being spoken at time t, else (None, 0)."""
+        for li in self.timing["lines"]:
+            if li["start"] <= t < li["start"] + li["dur"]:
+                env = li.get("env") or []
+                j = int((t - li["start"]) * 30)
+                return li.get("speaker", "narrator"), (env[j] if 0 <= j < len(env) else 0.0)
+        return None, 0.0
+
+    def talk(self, t, who):
+        sp, amp = self.speaking(t)
+        return amp if sp == who else 0.0
 
     def cue(self, t, kind):
         """Add a sound effect at time t: pop, whoosh, cash, ding, boing, thud."""
@@ -486,6 +540,13 @@ class Video:
         if self._bg is None:
             self._bg = make_bg()
             self._chunks = build_chunks(self.display, self.timing["lines"], self.timing["total"])
+            self._chunk_speaker = []
+            for c in self._chunks:
+                sp = "narrator"
+                for li in self.timing["lines"]:
+                    if li["start"] - 0.05 <= c[3][0][0] < li["start"] + li["dur"] + 0.05:
+                        sp = li.get("speaker", "narrator"); break
+                self._chunk_speaker.append(sp)
         layer = Image.new("RGBA", (W * S, H * S), (0, 0, 0, 0))
         p = Pen(layer)
         B = self.bounds()
@@ -538,12 +599,20 @@ class Video:
         d.rounded_rectangle([80, 150, 1000, 158], radius=4, fill=(40, 58, 84))
         d.rounded_rectangle([80, 150, 80 + 920 * clamp(t / total), 158], radius=4, fill=YEL)
         d.text((80, 182), f"{self.series}  ·  #{self.episode:02d}", font=self._tag_font, fill=MUTED)
-        for a, b, g, wt in self._chunks:
+        if self.title:
+            if not hasattr(self, "_title_img"):
+                self._title_img = _title_img(self.title)
+            ti = self._title_img
+            k = eback(prog(t, 0.0, 0.4))
+            if k > 0:
+                im = ti if k >= 0.999 else ti.resize((max(1, int(ti.width * k)), max(1, int(ti.height * k))), Image.BILINEAR)
+                img.paste(im, ((W - im.width) // 2, 228 + (ti.height - im.height) // 2), im)
+        for ci, (a, b, g, wt) in enumerate(self._chunks):
             if a <= t < b:
                 active = None
                 for wi, (ws, we) in enumerate(wt):
                     if ws <= t < we: active = wi
-                cap = caption_img(g, active)
+                cap = caption_img(g, active, self.speaker_colours.get(self._chunk_speaker[ci]))
                 sc = lerp(0.82, 1.0, eback(prog(t, a, a + 0.14)))
                 im = cap if sc == 1.0 else cap.resize((max(1, int(cap.width * sc)), max(1, int(cap.height * sc))), Image.BILINEAR)
                 img.paste(im, ((W - im.width) // 2, 1270 - im.height // 2 + (cap.height - im.height) // 2), im)
@@ -552,7 +621,7 @@ class Video:
 
     # ---- outputs ----
     def tts(self):
-        timing = synth_lines(self.lines, self.dir, voice=self.voice, lang=self.voice_lang)
+        timing = synth_lines(self.lines, self.dir, voice=self.voice, lang=self.voice_lang, cast=self.cast)
         self._timing = timing
         for li in timing["lines"]:
             print(f"[{li['start']:6.2f} +{li['dur']:5.2f}] {li['text']}\n           /{li['phonemes']}/")

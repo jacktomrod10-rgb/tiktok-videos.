@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 from studio.kit import *
 
 V = Video(
-    "microwave-door", episode=2,
+    "microwave-door", episode=2, title="Why doesn't your *microwave* cook *you*?",
     lines=[
         "Why doesn't your microwave cook you too?",
         "The answer is hiding in plain sight, right on the door.",
