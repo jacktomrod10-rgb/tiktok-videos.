@@ -31,6 +31,11 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
    - Target **60–75 seconds** of speech: about 170–200 words in 8–12 lines.
    - Line 1 is the hook, 10 words or fewer, a surprising claim ("X is secretly genius", "You've been
      using X wrong", "There's a reason X is Y").
+   - Line 2 must be the most surprising concrete fact, said straight away. No "the answer is…" or
+     "let me explain" filler, and no jargon or background before the payoff. Day-1 data: the microwave
+     video's filler line 2 lost over half of its remaining viewers by 10 s (see `notes/performance.md`).
+   - Ask the comment question in the voiceover, in the second-to-last line, e.g. "Did you know this one?
+     Tell me in the comments." Caption questions alone got zero comments.
    - Last line ends with "Follow for more everyday genius."
    - Pass `title="<the question the video answers, with 1–2 *highlighted* words>"` to `Video(...)`: it shows as a
      headline under the series tag for the whole video (see `videos/2026-11-23-microwave-door/make.py`).
