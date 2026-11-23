@@ -56,7 +56,7 @@ def hud_band(p, t):
 @V.sounds
 def sounds(L):
     a5 = L(5)[0]; a6 = L(6)[0]; a8 = L(8)[0]; a11 = L(11)[0]; a12 = L(12)[0]
-    out = [(0.6, "pop"), (a5 + 0.2, "boing"), (a6 + 0.8, "ding"), (L(7)[0] + 0.5, "boing"),
+    out = [(0.02, "thud"), (0.36, "pop"), (0.8, "pop"), (2.2, "whoosh"), (2.5, "pop"), (a5 + 0.2, "boing"), (a6 + 0.8, "ding"), (L(7)[0] + 0.5, "boing"),
            (a8 + 0.4, "pop"), (a8 + 3.6, "cash"), (a12 + 0.1, "pop"), (a12 + 3.0, "ding")]
     out += [(a11 - 0.4 + 0.6 + i * 2.7, "pop") for i in range(3)]
     out += [(L(i)[0] + 0.3, "pop") for i in (2, 3, 4)]
@@ -67,7 +67,17 @@ def hook(p, t, L):
     P.living_room(p, t, 0.03)
     P.family(p, t, {"dave": "sad", "sue": "sad", "ellie": "neutral", "alfie": "sad", "crumbs": "neutral"})
     top(p, t)
-    pill(p, 540, 380, "HOLIDAYS TAKEN: 0", prog(t, 0.6, 1.0), bg=RED, fg=WHITE)
+    # title card hook for the first ~2.4 s, then it slides away
+    out_k = eio(prog(t, 2.2, 2.7))
+    if out_k < 1:
+        y0 = 560
+        dx = -1200 * out_k
+        p.rect([0 + dx, y0, 1080 + dx, y0 + 430], fill=(11, 18, 32, 235))
+        k1 = eback(prog(t, 0.0, 0.35)); k2 = eback(prog(t, 0.35, 0.7)); k3 = eback(prog(t, 0.8, 1.15))
+        if k1 > 0: p.text((540 + dx, y0 + 110), "30 DAYS", f2("anton", max(10, int(180 * k1))), YEL)
+        if k2 > 0: p.text((540 + dx, y0 + 250), "TO SAVE \u00a31,000", f2("anton", max(10, int(96 * k2))), WHITE)
+        if k3 > 0: p.text((540 + dx, y0 + 355), "ONE SKINT FAMILY. YOU DECIDE.", f2("dm", max(8, int(40 * k3))), (255, 160, 190))
+    pill(p, 540, 380, "HOLIDAYS TAKEN: 0", prog(t, 2.5, 2.9), bg=RED, fg=WHITE)
 
 @V.scene(1, 5)
 def meet(p, t, L):
