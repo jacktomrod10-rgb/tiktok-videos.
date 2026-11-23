@@ -34,17 +34,28 @@ def glass(p, n, level, t, hl=0.0):
     cx, cy = GL[n]
     x0, y0, x1, y1 = cx - GW / 2, cy - GH / 2, cx + GW / 2, cy + GH / 2
     if hl > 0:
-        p.rr([x0 - 18, y0 - 18, x1 + 18, y1 + 18], 30, fill=(60, 90, 70))
-    p.rr([x0 - 6, y0, x1 + 6, y1 + 6], 18, fill=(60, 72, 96))
-    p.rr([x0, y0, x1, y1], 14, fill=(30, 40, 60))
-    lv = clamp(level)
-    if lv > 0:
-        top = y1 - (GH - 8) * lv
-        wob = 4 * math.sin(t * 6 + n) * (1 if lv < 1 else 0.3)
-        p.rr([x0 + 6, top + wob, x1 - 6, y1 - 6], 10, fill=WATER)
-        p.rect([x0 + 6, top + wob, x1 - 6, top + wob + 10], fill=WATER_L)
-    p.rr([x0 + 12, y0 + 12, x0 + 26, y1 - 20], 7, fill=(70, 86, 116))
-    p.circle(cx, y1 + 44, 26, fill=(255, 255, 255))
+        with p.flat():
+            for i in range(4):
+                p.rr([x0 - 30 + i * 6, y0 - 30 + i * 6, x1 + 30 - i * 6, y1 + 30 - i * 6], 40, fill=(40 + i * 12, 120 + i * 20, 80 + i * 12))
+    p.shadow([x0, y0, x1, y1 + 8], 18, dy=14, blur=14, alpha=120)
+    with p.flat():
+        p.rr([x0 - 7, y0 - 4, x1 + 7, y1 + 7], 20, fill=(150, 186, 214))           # glass wall
+        p.rr([x0, y0, x1, y1], 14, fill=(52, 74, 104))                             # inside (see-through)
+        lv = clamp(level)
+        if lv > 0:
+            top = y1 - (GH - 8) * lv
+            wob = 4 * math.sin(t * 6 + n) * (1 if lv < 1 else 0.3)
+            p.rr([x0 + 5, top + wob, x1 - 5, y1 - 5], 10, fill=WATER)
+            p.rr([x0 + 5, top + wob, x1 - 5, top + wob + 12], 6, fill=WATER_L)
+            for b in range(3):                                                     # bubbles
+                by = y1 - 20 - ((t * 60 + b * 47) % max(10, (y1 - top - 30)))
+                if by > top + 16:
+                    p.circle(x0 + 40 + b * 32, by, 5, fill=(190, 225, 255))
+        p.ell([x0 - 7, y0 - 14, x1 + 7, y0 + 12], fill=(170, 204, 230))            # rim
+        p.ell([x0 + 4, y0 - 6, x1 - 4, y0 + 6], fill=(40, 58, 84))
+        p.rr([x0 + 12, y0 + 16, x0 + 28, y1 - 24], 8, fill=(205, 228, 246))         # highlight streak
+        p.rr([x1 - 22, y0 + 30, x1 - 14, y0 + 90], 4, fill=(170, 204, 230))
+    p.circle(cx, y1 + 44, 27, fill=(255, 255, 255))
     p.text((cx, y1 + 46), str(n), f2("anton", 38), INK)
 
 def pipe(p, pts, flow=0.0, t=0.0, plug=None):
@@ -84,9 +95,18 @@ def tap(p, t, on):
         p.rect([534, 386, 548, 562], fill=WATER)
 
 def board(p, t, levels, flows, hl=None):
-    p.rect([0, 300, 1080, 1170], fill=(22, 28, 48))
-    for i in range(6):
-        p.circle(540, 760, 600 - i * 80, fill=(24 + i * 3, 30 + i * 3, 54 + i * 4))
+    with p.flat():
+        p.rect([0, 300, 1080, 1170], fill=(28, 52, 64))                          # tiled kitchen wall
+        for i in range(6):
+            p.circle(540, 700, 640 - i * 90, fill=(30 + i * 4, 56 + i * 6, 70 + i * 6))
+        for x in range(0, 1081, 90):
+            p.rect([x - 2, 300, x + 2, 1060], fill=(22, 42, 52))
+        for y in range(300, 1061, 90):
+            p.rect([0, y - 2, 1080, y + 2], fill=(22, 42, 52))
+        p.rect([0, 1060, 1080, 1170], fill=(120, 84, 56))                        # worktop
+        p.rect([0, 1060, 1080, 1074], fill=(160, 116, 80))
+        p.rect([0, 0, 1080, 299], fill=(0, 0, 0, 0))
+        p.rect([0, 1171, 1080, 1920], fill=(0, 0, 0, 0))
     pipe(p, P24, flows.get("24", 0), t, plug=PLUG)
     pipe(p, P35, flows.get("35", 0), t)
     pipe(p, P12, flows.get("12", 0), t)

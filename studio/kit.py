@@ -18,7 +18,7 @@ Keep visuals inside x 60..1000, y 300..1150. Captions sit at y~1270; the top bar
 """
 import os, sys, json, math, subprocess, shutil
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 W, H, S, FPS = 1080, 1920, 2, 30
 SERIES = "EVERYDAY GENIUS"
@@ -77,24 +77,86 @@ def f2(kind, size):
     return _F2[key]
 
 # ---------------- pen (2x supersampled) ----------------
+LOOK = os.environ.get("EG_LOOK", "1") != "0"     # premium look: shading, shadows, glow, grain (EG_LOOK=0 to compare)
+
 class Pen:
+    SHADE_MIN = 70          # shapes at least this big (1x px, both sides) get top-lit shading
     def __init__(self, img):
         self.img = img
         self.d = ImageDraw.Draw(img)
+        self.shade = LOOK
     @staticmethod
     def _box(box):
         x0, y0, x1, y1 = box
         if x1 < x0: x0, x1 = x1, x0
         if y1 < y0: y0, y1 = y1, y0
         return [x0 * S, y0 * S, x1 * S, y1 * S]
-    def rr(self, box, r, fill=None, outline=None, width=0):
+    class _Flat:
+        def __init__(self, pen): self.pen = pen
+        def __enter__(self): self.prev = self.pen.shade; self.pen.shade = False
+        def __exit__(self, *a): self.pen.shade = self.prev
+    def flat(self):
+        """Use `with p.flat():` around glows and layered backgrounds that must stay smooth."""
+        return Pen._Flat(self)
+    def _solid(self, fill):
+        return isinstance(fill, tuple) and (len(fill) == 3 or (len(fill) == 4 and fill[3] == 255))
+    def _shaded(self, kind, b, fill, r=0):
+        """Fill a shape with a soft top-lit gradient. Returns False if the shape is not eligible."""
+        if not (self.shade and self._solid(fill)): return False
+        w, h = int(b[2] - b[0]), int(b[3] - b[1])
+        if w < self.SHADE_MIN * S or h < self.SHADE_MIN * S or (w > 640 * S and h > 640 * S): return False
+        x0, y0 = int(b[0]), int(b[1])
+        if w < 900 * S or h < 600 * S:                           # objects (not panels) also cast a soft shadow
+            self.shadow([b[0] / S, b[1] / S, b[2] / S, b[3] / S], r / S if kind == 'rr' else (min(w, h) / S / 2 if kind == 'ell' else 4), dy=9, blur=11, alpha=85)
+        mask = Image.new("L", (w + 1, h + 1), 0)
+        md = ImageDraw.Draw(mask)
+        if kind == "rr": md.rounded_rectangle([0, 0, w, h], radius=r, fill=255)
+        elif kind == "ell": md.ellipse([0, 0, w, h], fill=255)
+        else: md.rectangle([0, 0, w, h], fill=255)
+        ys = np.linspace(0.0, 1.0, h + 1, dtype=np.float32)
+        fac = 1.16 - 0.34 * ys                                    # lit from above
+        fac = fac + 0.10 * np.exp(-((ys - 0.05) / 0.045) ** 2)    # soft top highlight
+        fac = fac - 0.10 * np.exp(-((1 - ys) / 0.06) ** 2)        # contact darkening at the bottom edge
+        col = np.clip(np.array(fill[:3], np.float32)[None, :] * fac[:, None], 0, 255).astype(np.uint8)
+        grad = Image.fromarray(np.ascontiguousarray(np.broadcast_to(col[:, None, :], (h + 1, w + 1, 3))), "RGB")
+        self.img.paste(grad, (x0, y0), mask)
+        return True
+    def shadow(self, box, r=20, dy=12, blur=16, alpha=110):
+        """Soft drop shadow under a card or label (draw it before the shape)."""
+        if not LOOK: return
+        b = self._box(box)
+        pad = int(blur * S * 2)
+        w, h = int(b[2] - b[0]) + 2 * pad, int(b[3] - b[1]) + 2 * pad
+        if w <= 2 * pad or h <= 2 * pad: return
+        q = 4                                                   # blur at quarter size, then scale up (fast)
+        sm = Image.new("RGBA", (max(1, w // q), max(1, h // q)), (0, 0, 0, 0))
+        ImageDraw.Draw(sm).rounded_rectangle([pad / q, pad / q, (w - pad) / q, (h - pad) / q], radius=r * S / q, fill=(4, 8, 18, alpha))
+        patch = sm.filter(ImageFilter.GaussianBlur(blur * S / 2 / q)).resize((w, h), Image.BILINEAR)
+        x, y = int(b[0]) - pad, int(b[1]) - pad + int(dy * S)
+        cx0, cy0 = max(0, -x), max(0, -y)
+        cx1, cy1 = min(w, self.img.width - x), min(h, self.img.height - y)
+        if cx1 <= cx0 or cy1 <= cy0: return
+        self.img.alpha_composite(patch.crop((cx0, cy0, cx1, cy1)), (x + cx0, y + cy0))
+    def rr(self, box, r, fill=None, outline=None, width=0, shadow=False):
         b = self._box(box)
         r = max(0, min(r * S, (b[2] - b[0]) / 2, (b[3] - b[1]) / 2))
+        if shadow: self.shadow(box, r / S)
+        if self._shaded("rr", b, fill, int(r)):
+            if outline: self.d.rounded_rectangle(b, radius=r, outline=outline, width=int(width * S))
+            return
         self.d.rounded_rectangle(b, radius=r, fill=fill, outline=outline, width=int(width * S))
     def rect(self, box, fill=None, outline=None, width=0):
-        self.d.rectangle(self._box(box), fill=fill, outline=outline, width=int(width * S))
+        b = self._box(box)
+        if self._shaded("rect", b, fill):
+            if outline: self.d.rectangle(b, outline=outline, width=int(width * S))
+            return
+        self.d.rectangle(b, fill=fill, outline=outline, width=int(width * S))
     def ell(self, box, fill=None, outline=None, width=0):
-        self.d.ellipse(self._box(box), fill=fill, outline=outline, width=int(width * S))
+        b = self._box(box)
+        if self._shaded("ell", b, fill):
+            if outline: self.d.ellipse(b, outline=outline, width=int(width * S))
+            return
+        self.d.ellipse(b, fill=fill, outline=outline, width=int(width * S))
     def circle(self, cx, cy, r, fill=None, outline=None, width=0):
         self.ell([cx - r, cy - r, cx + r, cy + r], fill, outline, width)
     def line(self, pts, fill, width):
@@ -120,7 +182,7 @@ def pill(p, cx, cy, s, pop, bg=YEL, fg=INK, size=40):
     font = f2("dm", max(8, int(size * sc)))
     w = len(s) * size * 0.62 * sc + 48 * sc
     h = size * 1.6 * sc
-    p.rr([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], h / 2, fill=bg)
+    p.rr([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], h / 2, fill=bg, shadow=True)
     p.text((cx, cy + 1), s, font, fg)
 
 def sparkle(p, cx, cy, r, fill=YEL):
@@ -186,6 +248,46 @@ def make_bg():
     glow = np.clip(1 - d, 0, 1)[..., None] * 0.15
     arr = arr * (1 - glow) + np.array((40, 70, 110), float) * glow
     return Image.fromarray(arr.astype(np.uint8), "RGB")
+
+
+# ---------------- premium finish ----------------
+_BOKEH = None
+def bokeh(img, t):
+    """Slowly drifting soft lights in the background, for depth (only visible where scenes leave the background)."""
+    global _BOKEH
+    if _BOKEH is None:
+        rng = np.random.default_rng(3)
+        lay = Image.new("RGBA", (W, H + 600), (0, 0, 0, 0))
+        d = ImageDraw.Draw(lay)
+        for _ in range(26):
+            x, y, r = rng.uniform(0, W), rng.uniform(0, H + 600), rng.uniform(18, 70)
+            c = [(90, 140, 220), (120, 110, 220), (240, 200, 120)][int(rng.integers(0, 3))]
+            d.ellipse([x - r, y - r, x + r, y + r], fill=c + (int(rng.uniform(18, 44)),))
+        _BOKEH = lay.filter(ImageFilter.GaussianBlur(10))
+    off = int((t * 14) % 600)
+    piece = _BOKEH.crop((0, 600 - off, W, 600 - off + H))
+    img.paste(piece, (0, 0), piece)
+
+_GRAIN = None
+def finish(img, t):
+    """Glow on bright areas, local contrast, gentle colour grade and fine grain."""
+    global _GRAIN
+    arr = np.asarray(img, dtype=np.float32)
+    q = img.resize((W // 4, H // 4), Image.BILINEAR)
+    qa = np.asarray(q, dtype=np.float32)
+    lum = qa @ np.array([0.2126, 0.7152, 0.0722], np.float32)
+    bright = Image.fromarray(np.clip(qa * np.clip((lum - 170) / 85, 0, 1)[..., None], 0, 255).astype(np.uint8))
+    glow = np.asarray(bright.filter(ImageFilter.GaussianBlur(7)).resize((W, H), Image.BILINEAR), dtype=np.float32)
+    soft = np.asarray(q.filter(ImageFilter.GaussianBlur(6)).resize((W, H), Image.BILINEAR), dtype=np.float32)
+    arr = arr + (arr - soft) * 0.22 + glow * 0.38                 # local contrast + bloom
+    g = arr.mean(axis=2, keepdims=True)
+    arr = g + (arr - g) * 1.08                                     # a touch more colour
+    arr = 255 * (np.clip(arr, 0, 255) / 255) ** 1.04               # deeper shadows
+    if _GRAIN is None:
+        rng = np.random.default_rng(11)
+        _GRAIN = rng.normal(0, 1.6, (H, W, 1)).astype(np.float32)   # static fine grain: texture without bloating files
+    arr = arr + _GRAIN
+    return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), "RGB")
 
 # ---------------- voice ----------------
 def ensure_models():
@@ -579,6 +681,8 @@ class Video:
         if alpha < 1:
             small.putalpha(small.getchannel("A").point(lambda v: int(v * alpha)))
         img = self._bg.copy()
+        if LOOK:
+            bokeh(img, t)
         img.paste(small, (0, 0), small)
         if self.fixed_fns:
             band = Image.new("RGBA", (W * S, 330 * S), (0, 0, 0, 0))
@@ -593,6 +697,8 @@ class Video:
                 a = (np.clip(d - 0.55, 0, 1) * 150).astype(np.uint8)
                 self._vig = Image.fromarray(np.dstack([np.zeros_like(a)] * 3 + [a]), "RGBA")
             img = img.convert("RGBA"); img.alpha_composite(self._vig); img = img.convert("RGB")
+        if LOOK:
+            img = finish(img, t)
         return self._overlay(img, t)
 
     def _overlay(self, img, t):

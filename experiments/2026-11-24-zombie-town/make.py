@@ -47,7 +47,8 @@ def night_sky(p, t):
     for i in range(40):
         x = (i * 173) % 1080; y = 320 + (i * 97) % 380
         p.circle(x, y, 1.5 + 1.2 * (0.5 + 0.5 * math.sin(t * 2 + i)), fill=(210, 220, 255))
-    for i in range(4):
+    with p.flat():
+      for i in range(4):
         p.circle(860, 430, 90 - i * 8 + 28 - i * 7, fill=(40 + i * 10, 46 + i * 10, 90 + i * 10))
     p.circle(860, 430, 62, fill=(240, 236, 210))
     p.circle(840, 418, 12, fill=(222, 216, 190)); p.circle(878, 448, 8, fill=(222, 216, 190))
@@ -97,7 +98,8 @@ def street(p, t):
     for i in range(0, 1080, 120):
         p.rect([i + 30, 1080, i + 90, 1088], fill=(90, 94, 110))
     p.rect([990, 640, 1004, 990], fill=(30, 32, 44))                # street lamp
-    for i in range(5):
+    with p.flat():
+      for i in range(5):
         p.circle(997, 640, 80 - i * 14, fill=(60 + i * 30, 60 + i * 28, 70 + i * 16))
     p.circle(997, 640, 18, fill=(255, 236, 170))
 
@@ -151,7 +153,8 @@ def phone(p, t, L):
     a, e = L(0)
     p.rect([0, 300, 1080, 1170], fill=(10, 12, 24))
     glow = 0.5 + 0.5 * math.sin(t * 6) if t < 1.2 else 1.0
-    for i in range(6):
+    with p.flat():
+      for i in range(6):
         p.circle(540, 760, 420 - i * 55, fill=(int(14 + 10 * i * glow), int(16 + 12 * i * glow), int(30 + 18 * i * glow)))
     buzz = math.sin(t * 60) * 6 * (1 - prog(t, 0.0, 1.0))
     x = 540 + buzz
@@ -205,7 +208,8 @@ def back_door(p, t, L):
 def choose(p, t, L):
     a4, e4 = L(4); a5, _ = L(5); a6, _ = L(6); a7, _ = L(7); a8, e8 = L(8)
     p.rect([0, 300, 1080, 1170], fill=(20, 24, 44))
-    for i in range(5):
+    with p.flat():
+      for i in range(5):
         p.circle(540, 760, 560 - i * 70, fill=(22 + i * 3, 26 + i * 3, 50 + i * 5))
     remain = 10 - 10 * clamp((t - a4 - 0.3) / max(1.0, a8 - a4 - 0.3))
     cx, cy, r = 540, 400, 64

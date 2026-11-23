@@ -65,8 +65,9 @@ def ground_shadow(p, x, yf, w):
 def living_room(p, t, jar_level=0.05):
     # wall with a warm light falloff and a soft diamond wallpaper
     p.rect([0, 300, 1080, 1010], fill=WALL)
-    for i in range(6):
-        p.circle(780, 560, 520 - i * 70, fill=tint(WALL, 0.04 + i * 0.025))
+    with p.flat():
+        for i in range(6):
+            p.circle(780, 560, 520 - i * 70, fill=tint(WALL, 0.04 + i * 0.025))
     p.rect([0, 0, 1080, 299], fill=(0, 0, 0, 0))   # keep the light inside the room
     for yy in range(330, 900, 80):
         for xx in range(20 + (40 if (yy // 80) % 2 else 0), 1080, 80):
@@ -100,8 +101,9 @@ def living_room(p, t, jar_level=0.05):
     p.rr([904, 440, 934, 520], 6, fill=(90, 140, 200))
     p.rr([936, 460, 950, 520], 4, fill=(240, 200, 80))
     # floor lamp with glow
-    for i in range(5):
-        p.circle(1010, 470, 150 - i * 25, fill=tint(WALL, 0.10 + i * 0.07))
+    with p.flat():
+        for i in range(5):
+            p.circle(1010, 470, 150 - i * 25, fill=tint(WALL, 0.10 + i * 0.07))
     p.rect([1004, 480, 1016, 1000], fill=OUT)
     p.poly([(950, 480), (1070, 480), (1045, 400), (975, 400)], (250, 226, 170))
     # floor + rug

@@ -51,6 +51,10 @@ def space(p, t):
         p.circle(x, y, r, fill=(200, 210, 255))
 
 def earth(p, t, glow=0.0, cutaway=True, cx=EX, cy=EY, r=ER):
+    with p.flat():
+        _earth(p, t, glow, cx, cy, r)
+
+def _earth(p, t, glow, cx, cy, r):
     for i in range(6):                                      # atmosphere halo
         p.circle(cx, cy, r + 34 - i * 5, fill=lerpc(SPACE, (70, 140, 230), 0.12 + i * 0.07))
     p.circle(cx, cy, r + 6, fill=(40, 110, 200))           # ocean rim

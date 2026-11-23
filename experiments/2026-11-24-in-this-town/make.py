@@ -267,8 +267,9 @@ def day_by_day(p, t, L):
     a8, e8 = L(8)
     i = int((t - e8 - 0.15) / (MONTAGE / 5)) if t > e8 + 0.15 else -1
     p.rect([0, 300, 1080, 1170], fill=(24, 30, 46))
-    for k in range(7):
-        p.circle(540, 760, 520 - k * 60, fill=(28 + k * 3, 36 + k * 3, 56 + k * 4))
+    with p.flat():
+        for k in range(7):
+            p.circle(540, 760, 520 - k * 60, fill=(28 + k * 3, 36 + k * 3, 56 + k * 4))
     if i < 0:
         P.living_room(p, t, 0.02)
         P.dave(p, 540, 1150, 1.15, "tired", t, talk=V.talk(t, "dave"))
