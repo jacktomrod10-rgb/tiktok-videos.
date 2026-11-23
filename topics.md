@@ -3,9 +3,9 @@
 Take the first unticked topic. When it's scheduled, tick it like this:
 `- [x] slug — title  (2026-11-24 · #01 · uuid -123...)`
 
-- [ ] uk-plug — Why the UK plug is secretly genius. Full 60–75 s version of `examples/uk_plug.py`; extra verified details could include the fuse ratings (3 A and 13 A are common), why the earth pin is longer (earth connects first, disconnects last), and the wiring colours
+- [x] uk-plug — Why the UK plug is secretly genius.  (2026-11-23 · #01 · uuid 3506233262526187761) Full 60–75 s version of `examples/uk_plug.py`; extra verified details could include the fuse ratings (3 A and 13 A are common), why the earth pin is longer (earth connects first, disconnects last), and the wiring colours
 - [ ] plane-windows — Why aeroplane windows are round (square corners concentrate stress; the 1950s Comet investigations)
-- [ ] microwave-door — Why your microwave doesn't cook you (the metal mesh in the door: holes smaller than the wavelength)
+- [x] microwave-door — Why your microwave doesn't cook you  (2026-11-23 · #02 · scheduled 13:00) (the metal mesh in the door: holes smaller than the wavelength)
 - [ ] noise-cancelling — How noise-cancelling headphones delete sound (microphones and an opposite "anti-noise" wave)
 - [ ] ykk-zips — Why so many zips say "YKK"
 - [ ] qr-torn — How a QR code still works when part of it is torn off (error correction)
