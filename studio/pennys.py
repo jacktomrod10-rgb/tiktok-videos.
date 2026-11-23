@@ -13,6 +13,7 @@ WALL, WALL_S = (88, 132, 140), (80, 122, 130)
 FLOOR, FLOOR_L = (124, 86, 60), (140, 100, 70)
 SOFA, SOFA_D = (214, 160, 70), (186, 134, 52)
 OPT_COLS = {"A": (61, 200, 190), "B": (255, 120, 160), "C": (255, 200, 70)}
+NARRATOR = "bm_fable"   # the owner picked this British male voice for The Pennys
 
 # ---------------- room ----------------
 def living_room(p, t, jar_level=0.05):
@@ -223,19 +224,23 @@ def hud(p, day, fund, goal=1000, days=30, pop=1.0):
     p.text((675, 253), f"HOLIDAY FUND  £{fund:,.2f} / £{goal:,}", f2("dm", 30), WHITE)
 
 def stats_panel(p, t, t0, stats, cx=540, cy=700):
-    """stats: list of (label, value 0..100, colour)."""
+    """stats: list of (label, value 0..100, colour[, text shown on the right])."""
     k = eback(prog(t, t0, t0 + 0.5))
     if k <= 0: return
     w, h = 820 * k, 440 * k
     p.rr([cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2], 40, fill=(20, 30, 50), outline=YEL, width=6)
     if k < 0.9: return
     p.text((cx, cy - 160), "THE PENNYS' STATS", f2("anton", 64), YEL)
-    for i, (lab, val, col) in enumerate(stats):
+    for i, st in enumerate(stats):
+        lab, val, col = st[0], st[1], st[2]
+        txt = st[3] if len(st) > 3 else f"{int(val)}/100"
         y = cy - 60 + i * 100
         g = eo(prog(t, t0 + 0.6 + i * 0.5, t0 + 1.4 + i * 0.5))
-        p.text((cx - 360, y), lab, f2("dm", 40), WHITE, anchor="lm")
-        p.rr([cx - 70, y - 22, cx + 340, y + 22], 22, fill=(50, 62, 86))
-        p.rr([cx - 70, y - 22, cx - 70 + max(44, 410 * val / 100 * g), y + 22], 22, fill=col)
+        p.text((cx - 370, y), lab, f2("dm", 38), WHITE, anchor="lm")
+        p.rr([cx - 110, y - 22, cx + 200, y + 22], 22, fill=(50, 62, 86))
+        p.rr([cx - 110, y - 22, cx - 110 + max(44, 310 * val / 100 * g), y + 22], 22, fill=col)
+        if g > 0.5:
+            p.text((cx + 370, y), txt, f2("anton", 44), col, anchor="rm")
 
 def vote_card(p, t, t0, question, options, cx=540, top=330, gap=1.6):
     """options: [(letter, title, effects)], appear one by one from t0."""

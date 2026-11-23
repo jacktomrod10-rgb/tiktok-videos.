@@ -9,7 +9,7 @@ DAY = 1
 FUND = 23.50
 
 V = Video(
-    "pennys-ep01", episode=DAY, series="THE PENNYS",
+    "pennys-ep01", episode=DAY, series="THE PENNYS", voice=P.NARRATOR,
     lines=[
         "This family has never been on holiday. Not once.",
         "Meet the Pennys. This is Dave. He fixes washing machines, and he's never been further than Skegness.",
@@ -20,7 +20,7 @@ V = Video(
         "Last night, Sue found a deal. A week in Lanzarote, for the whole family, for one thousand pounds.",
         "Lanzarote is covered in volcanoes. Alfie hasn't stopped screaming since.",
         "The money is due in thirty days. And the family holiday jar has... twenty-three pounds fifty in it.",
-        "Their stats aren't great either. Money: tiny. Happiness: so-so. And the house is a mess.",
+        "Their stats aren't great either. Money: twenty-three pounds fifty. Happiness: fifty out of a hundred. And the house: twenty-two. It's a mess.",
         "So it's up to you. What should the Pennys do first?",
         "A: a car boot sale, to sell all the junk in the garage. B: Dave takes weekend repair jobs. Or C: Ellie sells her old clothes online.",
         "Comment A, B or C. The most votes decides what happens tomorrow. Follow, to see if they make it.",
@@ -35,7 +35,7 @@ V = Video(
         "Last night, Sue found a deal. A week in *Lanzarote*, for the whole family, for *£1,000*.",
         "Lanzarote is covered in *volcanoes*. Alfie hasn't stopped *screaming* since.",
         "The money is due in *30 days*. And the family holiday jar has... *£23.50* in it.",
-        "Their stats aren't great either. Money: *tiny*. Happiness: *so-so*. And the house is a *mess*.",
+        "Their stats aren't great either. Money: *£23.50*. Happiness: *50/100*. And the house: *22/100*. It's a *mess*.",
         "So it's up to *you*. What should the Pennys do *first*?",
         "*A*: a car boot sale, to sell all the junk in the garage. *B*: Dave takes weekend repair jobs. Or *C*: Ellie sells her old clothes online.",
         "Comment *A*, *B* or *C*. The most votes decides what happens *tomorrow*. Follow, to see if they make it.",
@@ -118,7 +118,7 @@ def jar_and_stats(p, t, L):
         if k > 0:
             p.text((540, 1080), "£23.50", f2("anton", int(110 * k)), YEL)
     else:
-        P.stats_panel(p, t, a9 + 0.2, [("MONEY", 3, GREEN), ("HAPPINESS", 50, YEL), ("HOUSE", 22, ORANGE)])
+        P.stats_panel(p, t, a9 + 0.2, [("MONEY", 3, GREEN, "\u00a323.50"), ("HAPPINESS", 50, YEL, "50/100"), ("HOUSE", 22, ORANGE, "22/100")])
     top(p, t)
 
 @V.scene(10, 12)

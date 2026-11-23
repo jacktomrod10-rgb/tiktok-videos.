@@ -63,5 +63,8 @@ the trip, or a heartfelt near miss. Then message the owner suggesting season 2 i
   shares. TikTok treats that as fake engagement, and it can stop the account being recommended.
 - Keep it family-friendly and kind: tease, don't humiliate. No real people, real brands made to look bad, or
   characters from other creators.
-- Keep the characters consistent with `state.json`. Use the same voice (`bm_george`) and the same look.
+- Keep the characters consistent with `state.json`. The narrator voice for The Pennys is `bm_fable`
+  (the owner's choice; pass `voice=P.NARRATOR` to `Video`, as ep01 does). Explainers keep `bm_george`.
+- Stats are spoken and shown as real numbers ("Happiness: fifty out of a hundred", `stats_panel` with a value
+  text), never vague words like "tiny".
 - Keep the story consistent: money and stats on screen must match `state.json`.

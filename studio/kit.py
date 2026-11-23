@@ -195,14 +195,15 @@ def ensure_models():
         if not os.path.exists(path) or os.path.getsize(path) < 1_000_000:
             subprocess.run(["curl", "-sL", "-m", "300", "-o", path, url], check=True)
 
-def synth_lines(lines, out_dir, gap=0.30, lead=0.15):
+def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, speed=None):
+    voice, lang, speed = voice or VOICE, lang or VOICE_LANG, speed or VOICE_SPEED
     import soundfile as sf
     from kokoro_onnx import Kokoro
     ensure_models()
     k = Kokoro(os.path.join(MODEL_DIR, "kokoro-v1.0.int8.onnx"), os.path.join(MODEL_DIR, "voices-v1.0.bin"))
     chunks, info, t, sr_out = [], [], lead, 24000
     for i, text in enumerate(lines):
-        samples, sr = k.create(text, voice=VOICE, speed=VOICE_SPEED, lang=VOICE_LANG)
+        samples, sr = k.create(text, voice=voice, speed=speed, lang=lang)
         sr_out = sr
         samples = np.asarray(samples, dtype=np.float32)
         idx = np.where(np.abs(samples) > 0.01)[0]
@@ -210,7 +211,7 @@ def synth_lines(lines, out_dir, gap=0.30, lead=0.15):
             samples = samples[max(0, idx[0] - int(0.03 * sr)): idx[-1] + int(0.08 * sr)]
         dur = len(samples) / sr
         info.append({"i": i, "text": text, "start": round(t, 3), "dur": round(dur, 3),
-                     "phonemes": k.tokenizer.phonemize(text, VOICE_LANG)})
+                     "phonemes": k.tokenizer.phonemize(text, lang)})
         chunks += [samples, np.zeros(int(gap * sr), dtype=np.float32)]
         t += dur + gap
     voice = np.concatenate([np.zeros(int(lead * sr_out), dtype=np.float32)] + chunks)
@@ -294,9 +295,10 @@ def caption_img(words):
 
 # ---------------- the video ----------------
 class Video:
-    def __init__(self, slug, lines, display, episode=1, series=SERIES):
+    def __init__(self, slug, lines, display, episode=1, series=SERIES, voice=None, voice_lang=None):
         assert len(lines) == len(display), "lines and display must have the same count"
         self.slug, self.lines, self.display, self.episode, self.series = slug, lines, display, episode, series
+        self.voice, self.voice_lang = voice, voice_lang
         self.dir = os.path.join(BUILD_ROOT, slug)
         os.makedirs(self.dir, exist_ok=True)
         self.scenes = []          # (first_line, last_line, fn)
@@ -374,7 +376,7 @@ class Video:
 
     # ---- outputs ----
     def tts(self):
-        timing = synth_lines(self.lines, self.dir)
+        timing = synth_lines(self.lines, self.dir, voice=self.voice, lang=self.voice_lang)
         self._timing = timing
         for li in timing["lines"]:
             print(f"[{li['start']:6.2f} +{li['dur']:5.2f}] {li['text']}\n           /{li['phonemes']}/")
