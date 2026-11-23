@@ -13,7 +13,7 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
 | Metricool | brand/blogId `8305380`, timezone `Europe/London`, TikTok account linked (jackrodgers102) |
 | Metricool plan | Free: **20 published posts per calendar month**, resets on the 1st |
 | Post time | **19:00 Europe/London**, same day as the run (if it's already past 18:30, use one hour from now) |
-| Voice | Kokoro `bf_emma` (British female), set in `studio/kit.py` |
+| Voice | Kokoro `bm_george` (British male, chosen by the owner), set in `studio/kit.py` |
 | Stats (optional) | Windsor connector `tiktok_organic`, account `_000od0_ziCgbX4rS4Lw3KlPBn_Doym-UYGw` (read-only) |
 
 ## Daily run procedure

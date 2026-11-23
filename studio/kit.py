@@ -28,7 +28,7 @@ MODEL_URLS = {
     "kokoro-v1.0.int8.onnx": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/kokoro-v1.0.int8.onnx",
     "voices-v1.0.bin": "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/voices-v1.0.bin",
 }
-VOICE, VOICE_LANG, VOICE_SPEED = "bf_emma", "en-gb", 1.08
+VOICE, VOICE_LANG, VOICE_SPEED = "bm_george", "en-gb", 1.08
 
 ANTON = "/usr/share/fonts/truetype/google-fonts/ofl/anton/Anton-Regular.ttf"
 DMSANS = "/usr/share/fonts/truetype/google-fonts/ofl/dmsans/DMSans[opsz,wght].ttf"
