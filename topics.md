@@ -7,7 +7,7 @@ Take the first unticked topic. When it's scheduled, tick it like this:
 - [x] plane-windows — Why aeroplane windows are round  (2026-11-23 · #03 · uuid 2623875196404123130) (square corners concentrate stress; the 1950s Comet investigations)
 - [x] microwave-door — Why your microwave doesn't cook you  (2026-11-23 · #02 · uuid -2404431812184291648) (the metal mesh in the door: holes smaller than the wavelength)
 - [x] noise-cancelling — How noise-cancelling headphones delete sound  (2026-11-23 · #04 · uuid 3657041485181570589) (microphones and an opposite "anti-noise" wave)
-- [x] ykk-zips — Why so many zips say "YKK"  (2026-11-23 · #05 · scheduled 20:30)
+- [x] ykk-zips — Why so many zips say "YKK"  (2026-11-23 · #05 · uuid 8991087088207416827)
 - [ ] qr-torn — How a QR code still works when part of it is torn off (error correction)
 - [ ] fridge-cold — How a fridge makes cold by moving heat out (refrigerant evaporating and condensing)
 - [ ] barcode — How a barcode is read in a split second
