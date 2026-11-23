@@ -210,8 +210,21 @@ def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, spee
         if len(idx):
             samples = samples[max(0, idx[0] - int(0.03 * sr)): idx[-1] + int(0.08 * sr)]
         dur = len(samples) / sr
+        # loudness envelope at 30 fps (for lip sync) and pauses inside the line (for caption timing)
+        hop = sr // 30
+        env = [float(np.sqrt(np.mean(samples[j:j + hop] ** 2))) for j in range(0, len(samples), hop)]
+        peak = max(env) if env else 1.0
+        env = [round(min(1.0, e / (peak * 0.7 + 1e-9)), 3) for e in env]
+        pauses, run = [], 0
+        for j, e in enumerate(env):
+            if e < 0.06:
+                run += 1
+            else:
+                if run >= 3 and j - run > 2:
+                    pauses.append([round((j - run) / 30, 3), round(j / 30, 3)])
+                run = 0
         info.append({"i": i, "text": text, "start": round(t, 3), "dur": round(dur, 3),
-                     "phonemes": k.tokenizer.phonemize(text, lang)})
+                     "phonemes": k.tokenizer.phonemize(text, lang), "env": env, "pauses": pauses})
         chunks += [samples, np.zeros(int(gap * sr), dtype=np.float32)]
         t += dur + gap
     voice = np.concatenate([np.zeros(int(lead * sr_out), dtype=np.float32)] + chunks)
@@ -320,46 +333,88 @@ def _cap_font():
     if CAP_FONT is None: CAP_FONT = ImageFont.truetype(ANTON, 92)
     return CAP_FONT
 
+def _wweight(w):
+    core = w.replace("*", "")
+    return len(core) + 2 + (4 if core[-1:] in ".,!?:;" else 0)
+
 def build_chunks(display, lines_info, total):
+    """Caption chunks of up to 4 words, each with per-word timings (proportional to word length)."""
     out = []
     for i, text in enumerate(display):
         words = text.split()
         groups, cur = [], []
         for w in words:
             cur.append(w)
-            if len(cur) >= 4 or (w.rstrip("*")[-1:] in ".,!?" and len(cur) >= 2):
+            if len(cur) >= 4 or (w.rstrip("*")[-1:] in ".,!?:" and len(cur) >= 2):
                 groups.append(cur); cur = []
         if cur:
             if groups and len(cur) == 1: groups[-1] += cur
             else: groups.append(cur)
-        weights = [sum(len(w.replace("*", "")) + 1 for w in g) + (5 if g[-1].rstrip("*")[-1:] in ".,!?" else 0) for g in groups]
-        s, d = lines_info[i]["start"], lines_info[i]["dur"]
-        tw, t = sum(weights), s
-        for g, wt in zip(groups, weights):
-            dd = d * wt / tw
-            out.append((t, t + dd, g)); t += dd
-    return [(a, max(b, out[j + 1][0] if j + 1 < len(out) else total), g) for j, (a, b, g) in enumerate(out)]
+        s0, d = lines_info[i]["start"], lines_info[i]["dur"]
+        # phrases end at punctuation; align phrase breaks with real pauses in the audio when they match
+        phrases, curp = [], []
+        for w in words:
+            curp.append(w)
+            if w.replace("*", "")[-1:] in ".,!?:;":
+                phrases.append(curp); curp = []
+        if curp: phrases.append(curp)
+        pauses = sorted(lines_info[i].get("pauses") or [], key=lambda q: q[1] - q[0], reverse=True)
+        nb = len(phrases) - 1
+        spans = None
+        if nb > 0 and len(pauses) >= nb:
+            use = sorted(pauses[:nb])
+            edges = [0.0] + [x for q in use for x in q] + [d]
+            spans = [(edges[2 * k], edges[2 * k + 1]) for k in range(nb + 1)]
+            if any(b <= a for a, b in spans): spans = None
+        if spans is None:
+            tw = sum(_wweight(w) for w in words)
+            spans, acc = [], 0.0
+            for ph in phrases:
+                dd = d * sum(_wweight(w) for w in ph) / tw
+                spans.append((acc, acc + dd)); acc += dd
+        word_t = []
+        for ph, (a, b) in zip(phrases, spans):
+            tw = sum(_wweight(w) for w in ph)
+            t = s0 + a
+            for w in ph:
+                dd = (b - a) * _wweight(w) / tw
+                word_t.append((t, t + dd)); t += dd
+        k = 0
+        for g in groups:
+            wt = word_t[k:k + len(g)]; k += len(g)
+            out.append([wt[0][0], wt[-1][1], g, wt])
+    for j in range(len(out)):
+        nxt = out[j + 1][0] if j + 1 < len(out) else total
+        out[j][1] = max(out[j][1], nxt)
+    return [tuple(c) for c in out]
 
 _CAP_CACHE = {}
-def caption_img(words):
-    key = " ".join(words)
+def caption_img(words, active=None):
+    key = (" ".join(words), active)
     if key in _CAP_CACHE: return _CAP_CACHE[key]
     font = _cap_font()
     toks = [(w.replace("*", "").upper(), "*" in w) for w in words]
     space, maxw, lh = 24, 900, 118
     widths = [font.getbbox(tk)[2] - font.getbbox(tk)[0] for tk, _ in toks]
     lines, cur, cw = [], [], 0
-    for (tk, hl), w in zip(toks, widths):
+    for idx, ((tk, hl), w) in enumerate(zip(toks, widths)):
         if cur and cw + space + w > maxw:
             lines.append(cur); cur, cw = [], 0
-        cur.append((tk, hl, w)); cw += (space if len(cur) > 1 else 0) + w
+        cur.append((tk, hl, w, idx)); cw += (space if len(cur) > 1 else 0) + w
     lines.append(cur)
     img = Image.new("RGBA", (W, lh * len(lines) + 40), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     for li, ln in enumerate(lines):
-        x = (W - (sum(w for _, _, w in ln) + space * (len(ln) - 1))) / 2
-        for tk, hl, w in ln:
-            d.text((x, 20 + li * lh), tk, font=font, fill=YEL if hl else (255, 255, 255), stroke_width=9, stroke_fill=INK)
+        x = (W - (sum(w for _, _, w, _ in ln) + space * (len(ln) - 1))) / 2
+        for tk, hl, w, idx in ln:
+            y = 20 + li * lh
+            if idx == active:
+                bb = font.getbbox(tk)
+                d.rounded_rectangle([x - 14, y + bb[1] - 12, x + w + 14, y + bb[3] + 12], radius=18, fill=INK)
+                d.rounded_rectangle([x - 10, y + bb[1] - 8, x + w + 10, y + bb[3] + 8], radius=16, fill=YEL)
+                d.text((x, y), tk, font=font, fill=INK)
+            else:
+                d.text((x, y), tk, font=font, fill=YEL if hl else (255, 255, 255), stroke_width=9, stroke_fill=INK)
             x += w + space
     _CAP_CACHE[key] = img
     return img
@@ -483,9 +538,12 @@ class Video:
         d.rounded_rectangle([80, 150, 1000, 158], radius=4, fill=(40, 58, 84))
         d.rounded_rectangle([80, 150, 80 + 920 * clamp(t / total), 158], radius=4, fill=YEL)
         d.text((80, 182), f"{self.series}  ·  #{self.episode:02d}", font=self._tag_font, fill=MUTED)
-        for a, b, g in self._chunks:
+        for a, b, g, wt in self._chunks:
             if a <= t < b:
-                cap = caption_img(g)
+                active = None
+                for wi, (ws, we) in enumerate(wt):
+                    if ws <= t < we: active = wi
+                cap = caption_img(g, active)
                 sc = lerp(0.82, 1.0, eback(prog(t, a, a + 0.14)))
                 im = cap if sc == 1.0 else cap.resize((max(1, int(cap.width * sc)), max(1, int(cap.height * sc))), Image.BILINEAR)
                 img.paste(im, ((W - im.width) // 2, 1270 - im.height // 2 + (cap.height - im.height) // 2), im)
