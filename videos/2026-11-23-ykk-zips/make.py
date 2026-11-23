@@ -3,7 +3,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 from studio.kit import *
 
 V = Video(
-    "ykk-zips", episode=5,
+    "ykk-zips", episode=3,
     lines=[
         "Check the zip on your jacket. It probably says Y K K.",
         "By one estimate, those three letters are on about half the zips on Earth.",

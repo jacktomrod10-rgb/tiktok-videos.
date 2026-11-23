@@ -20,7 +20,8 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
 
 1. **Set up.** `pip install --break-system-packages -q kokoro-onnx soundfile`. Voice models download
    automatically from GitHub on first use. Work from the repo root.
-2. **Pick the topic.** First unticked line in `topics.md`. Episode number = number of ticked topics + 1.
+2. **Pick the topic.** First unticked line in `topics.md`. Episode number = number of ticked topics that were
+   actually posted (ignore lines marked `NOT POSTED` or `SKIPPED`) + 1.
 3. **Research.** Look up every factual claim you plan to use (WebSearch/WebFetch). Each claim needs one
    primary/official source or two independent reputable ones. Drop any claim you can't verify. If the
    topic doesn't hold up, mark it `[x] SKIPPED: reason` and take the next one. Save the sources to
