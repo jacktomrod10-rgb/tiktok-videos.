@@ -97,8 +97,11 @@ the explainer run.
 - Vary the hooks and the scene layouts from day to day, so the feed doesn't look templated.
 - When fewer than 5 topics are left unticked, research and append 10 new ones that fit these rules.
 
-## Mondays: quick performance check (optional, only if time allows)
+## Analytics (handled elsewhere, don't run your own)
 
-Read the last 7 days of video stats (Windsor `tiktok_organic`, or Metricool analytics) and append 3–5 lines
-to `notes/performance.md`: which videos held viewers best and what to do more of. Reorder the next few
-topics in `topics.md` to match.
+The owner's separate "TikTok analytics team" chat adds each day's stats at midnight to the Claude Doc
+**TikTok Analytics Log: Everyday Genius** (https://claude.ai/artifact/37JKLVeXi2CuAdtBPofn7s; with the docs
+tools: `read` with ref `{"object":"project","id":"37JKLVeXi2CuAdtBPofn7s"}`, then read its tab).
+- Before writing the script (step 4), read that doc's findings and "Next video" sections if the docs tools are
+  available, and apply what it recommends where it fits these rules. If it can't be read, carry on without it.
+- Don't edit that doc, and don't pull analytics yourself. `notes/performance.md` keeps the day-1 lessons.
