@@ -1,7 +1,7 @@
 # The Pennys — daily interactive episode
 
 An original cartoon family series. The Pennys (Dave, Sue, Ellie, Alfie and Crumbs the dog) have 30 days to
-save £1,000 for a week in Lanzarote. Every episode ends with an A/B/C choice, and viewers vote in the comments.
+save a £1,000 deposit for three weeks in Australia. Every episode ends with an A/B/C choice, and viewers vote in the comments.
 Each daily run counts yesterday's votes, plays out the winning choice, and posts the next episode at
 **13:00 Europe/London**.
 

@@ -15,10 +15,10 @@ V = Video(
         "Meet the Pennys. This is Dave. He fixes washing machines, and he's never been further than Skegness.",
         "This is Sue. She runs the house, the budget, and the family group chat.",
         "Ellie is fifteen, and hasn't looked up from her phone since twenty twenty-three.",
-        "Alfie is eight, and his biggest dream is to see a real volcano.",
+        "Alfie is eight, and his biggest dream is to see a real kangaroo.",
         "And this is Crumbs. He has eaten three TV remotes this year.",
-        "Last night, Sue found a deal. A week in Lanzarote, for the whole family, for one thousand pounds.",
-        "Lanzarote is covered in volcanoes. Alfie hasn't stopped screaming since.",
+        "Last night, Sue found a deal. Three weeks in Australia, for the whole family. But they need a one thousand pound deposit.",
+        "Australia has kangaroos, koalas, and spiders the size of your hand. Alfie hasn't stopped screaming since.",
         "The money is due in thirty days. And the family holiday jar has... twenty-three pounds fifty in it.",
         "Their stats aren't great either. Money: twenty-three pounds fifty. Happiness: fifty out of a hundred. And the house: twenty-two. It's a mess.",
         "So it's up to you. What should the Pennys do first?",
@@ -30,10 +30,10 @@ V = Video(
         "Meet the *Pennys*. This is *Dave*. He fixes washing machines, and he's never been further than *Skegness*.",
         "This is *Sue*. She runs the house, the *budget*, and the family *group chat*.",
         "*Ellie* is 15, and hasn't looked up from her *phone* since *2023*.",
-        "*Alfie* is 8, and his biggest dream is to see a real *volcano*.",
+        "*Alfie* is 8, and his biggest dream is to see a real *kangaroo*.",
         "And this is *Crumbs*. He has eaten *three* TV remotes this year.",
-        "Last night, Sue found a deal. A week in *Lanzarote*, for the whole family, for *£1,000*.",
-        "Lanzarote is covered in *volcanoes*. Alfie hasn't stopped *screaming* since.",
+        "Last night, Sue found a deal. Three weeks in *Australia*, for the whole family. But they need a *£1,000* deposit.",
+        "Australia has *kangaroos*, koalas, and spiders the size of your *hand*. Alfie hasn't stopped *screaming* since.",
         "The money is due in *30 days*. And the family holiday jar has... *£23.50* in it.",
         "Their stats aren't great either. Money: *£23.50*. Happiness: *50/100*. And the house: *22/100*. It's a *mess*.",
         "So it's up to *you*. What should the Pennys do *first*?",
@@ -93,7 +93,7 @@ def meet(p, t, L):
     elif who == 4:
         P.alfie(p, 540, 1120, s * 1.1, "grin", t, wave=1)
         pill(p, 540, 380, "ALFIE, 8", prog(t, a + 0.3, a + 0.6))
-        pill(p, 540, 1110, "DREAM: A REAL VOLCANO", prog(t, a + 2.2, a + 2.6), bg=ORANGE)
+        pill(p, 540, 1110, "DREAM: A REAL KANGAROO", prog(t, a + 2.2, a + 2.6), bg=ORANGE)
     else:
         P.crumbs(p, 600, 1120, 1.3 * max(0.01, k), "happy", t)
         # half-eaten remote
@@ -110,13 +110,13 @@ def the_deal(p, t, L):
     P.living_room(p, t, 0.03)
     if t < a7:
         P.sue(p, 230, 1120, 1.0, "shock" if t > a6 + 2.5 else "happy", t, hold="phone")
-        P.phone_card(p, t, a6 + 0.8, [("LANZAROTE", 70, INK), ("7 NIGHTS · WHOLE FAMILY", 32, (60, 60, 70)), ("£1,000", 90, RED)], cx=700, cy=720)
+        P.phone_card(p, t, a6 + 0.8, [("AUSTRALIA", 70, INK), ("3 WEEKS · WHOLE FAMILY", 32, (60, 60, 70)), ("£1,000", 90, RED), ("DEPOSIT", 34, (60, 60, 70))], cx=700, cy=720)
     else:
         P.alfie(p, 540, 1120, 1.4, "grin", t, wave=1)
         for ang, rr in [(-30, 330), (200, 320), (20, 360), (160, 350)]:
             a = math.radians(ang)
             sparkle(p, 540 + math.cos(a) * rr, 700 + math.sin(a) * rr, 30 * eback(prog(t, a7 + 0.5, a7 + 0.9)))
-        pill(p, 540, 380, "VOLCANOES!!!", prog(t, a7 + 0.4, a7 + 0.8), bg=ORANGE)
+        pill(p, 540, 380, "KANGAROOS!!!", prog(t, a7 + 0.4, a7 + 0.8), bg=ORANGE)
     top(p, t)
 
 @V.scene(8, 9)

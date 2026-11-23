@@ -319,10 +319,15 @@ def alfie(p, x, yf, s=1.0, mood="grin", t=0.0, wave=0.0, hold=None):
         p.poly([(bx - hr * .2, hy - hr * .55), (bx + hr * .05, hy - hr * 1.25), (bx + hr * .3, hy - hr * .55)], blond if k % 2 else shade(blond, .9))
     _head(p, x, hy, hr, mood, t, 0.7, iris=(80, 120, 170))
     p.d.chord([(x - hr) * S, (hy - hr * 1.0) * S, (x + hr) * S, (hy + hr * .06) * S], 180, 360, fill=blond)
-    # volcano on the t-shirt
-    p.poly([(x - 34 * s, top + 104 * s), (x - 9 * s, top + 56 * s), (x + 9 * s, top + 56 * s), (x + 34 * s, top + 104 * s)], (120, 80, 60))
-    p.circle(x, top + 52 * s, 9 * s, fill=ORANGE)
-    p.circle(x - 8 * s, top + 42 * s, 6 * s, fill=YEL)
+    # koala face on the t-shirt
+    kx, ky = x, top + 80 * s
+    for sx in (-1, 1):
+        p.circle(kx + sx * 24 * s, ky - 18 * s, 13 * s, fill=(150, 156, 166))
+        p.circle(kx + sx * 24 * s, ky - 18 * s, 7 * s, fill=(220, 200, 210))
+    p.circle(kx, ky, 24 * s, fill=(170, 176, 186))
+    p.ell([kx - 7 * s, ky - 2 * s, kx + 7 * s, ky + 14 * s], fill=INK)
+    for sx in (-1, 1):
+        p.circle(kx + sx * 11 * s, ky - 8 * s, 3.5 * s, fill=INK)
 
 def crumbs(p, x, yf, s=1.0, mood="happy", t=0.0):
     wag = math.sin(t * 12) * 0.5
@@ -439,7 +444,8 @@ def phone_card(p, t, t0, lines, cx=540, cy=700):
     p.rr([cx - w / 2 + 18, cy - h / 2 + 18, cx + w / 2 - 18, cy + h / 2 - 18], 46 * k, fill=(240, 244, 250))
     if k < 0.95: return
     p.rect([cx - 212, cy - 360, cx + 212, cy - 120], fill=(120, 190, 240))
-    p.poly([(cx - 212, cy - 120), (cx - 90, cy - 250), (cx - 20, cy - 190), (cx + 60, cy - 290), (cx + 212, cy - 120)], (150, 100, 80))
+    p.rect([cx - 212, cy - 170, cx + 212, cy - 120], fill=(214, 120, 60))   # red outback ground
+    p.poly([(cx - 150, cy - 170), (cx - 110, cy - 215), (cx - 20, cy - 222), (cx + 30, cy - 170)], (170, 80, 50))   # big red rock
     p.circle(cx + 120, cy - 300, 36, fill=YEL)
     for i, (txt, size, col) in enumerate(lines):
         p.text((cx, cy - 40 + i * 80), txt, f2("anton" if i == 0 else "dm", size), col)
