@@ -4,6 +4,20 @@ This repo is the working folder for the owner's faceless TikTok account **Everyd
 short animated explainers on how everyday things secretly work. Each daily run makes ONE
 video, publishes the file here, and schedules it on TikTok through Metricool.
 
+## THE GOAL: earn $25 a month from TikTok (set by the owner, 23 Nov 2026)
+
+$25 a month pays for Metricool's paid plan, so the account pays for itself. The route is TikTok's
+**Creator Rewards Program**, which needs (TikTok newsroom + programme terms, checked 23 Nov 2026):
+- **10,000 followers** and **100,000 video views in the last 30 days**, all authentic.
+- A **personal account** in good standing in an eligible country (the UK is). The owner doesn't want a Business
+  account, and that's correct for this programme anyway. Never suggest switching.
+- Only videos **at least 1 minute long** earn, so every video must run **over 62 s** (a safety margin).
+
+Every decision serves this: hooks and retention that win followers, one strong video a day in each series,
+and nothing that risks the account (no fake engagement, no rewards for likes or follows, no copied content,
+and keep the AI disclosure). Report progress towards 10k followers and 100k views in 30 days when the
+analytics log shows it.
+
 ## Fixed facts
 
 | Thing | Value |
@@ -28,7 +42,7 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
    `videos/<YYYY-MM-DD>-<slug>/sources.md` (claim → URL).
 4. **Write the script** as `videos/<YYYY-MM-DD>-<slug>/make.py`, copying the structure of
    `examples/uk_plug.py`:
-   - Target **60–75 seconds** of speech: about 170–200 words in 8–12 lines.
+   - Target **63–75 seconds** of speech: about 180–200 words in 8–12 lines. Never under a minute (see THE GOAL).
    - Line 1 is the hook, 10 words or fewer, a surprising claim ("X is secretly genius", "You've been
      using X wrong", "There's a reason X is Y").
    - Line 2 must be the most surprising concrete fact, said straight away. No "the answer is…" or
@@ -44,7 +58,7 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
    - `lines` = what the voice says: write numbers, years and units as words ("nineteen forty-seven",
      "thirteen amps"). `display` = the captions: digits allowed, mark 1–3 key words per line with `*word*`.
 5. **Voice.** `python3 -I videos/<dir>/make.py tts`. Read the printed phonemes; if a word or number is
-   mispronounced, respell it in `lines` and rerun. Check the TOTAL is 58–80 s.
+   mispronounced, respell it in `lines` and rerun. Check the TOTAL is 62–80 s. If it's shorter, add a line, don't slow the voice.
 6. **Visuals.** One `@V.scene(...)` per idea, 4–7 scenes, using the kit (`Pen`, `pill`, `tick`, `cross`,
    `sparkle`, `big_number`, `flow_dots`, `bar_chart`, `arrow`). Rules:
    - Draw simple flat diagrams of the thing being explained; something should move at all times.
