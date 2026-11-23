@@ -54,6 +54,8 @@ def prog(t, t0, t1): return clamp((t - t0) / max(1e-6, t1 - t0))
 def eo(x): return 1 - (1 - x) ** 3
 def eio(x): return 4 * x ** 3 if x < .5 else 1 - (-2 * x + 2) ** 3 / 2
 def eback(x):
+    if x <= 0: return 0.0
+    if x >= 1: return 1.0
     c1, c3 = 1.70158, 2.70158
     return 1 + c3 * (x - 1) ** 3 + c1 * (x - 1) ** 2
 def lerp(a, b, x): return a + (b - a) * x
