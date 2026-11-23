@@ -1,0 +1,34 @@
+{
+ "series": "The Pennys",
+ "goal": 1000,
+ "days": 30,
+ "destination": "Lanzarote",
+ "day": 1,
+ "fund": 23.5,
+ "stats": {
+  "happiness": 50,
+  "house": 22
+ },
+ "characters": {
+  "dave": "Dad, 41, fixes washing machines, furthest trip Skegness, moustache, blue overalls",
+  "sue": "Mum, 40, runs the house, the budget and the family group chat, curly red hair, glasses, pink cardigan",
+  "ellie": "15, glued to her phone, purple hoodie, long dark hair",
+  "alfie": "8, dreams of seeing a real volcano, spiky blond hair, green volcano t-shirt",
+  "crumbs": "the dog, has eaten three TV remotes this year"
+ },
+ "episodes": [
+  {
+   "day": 1,
+   "summary": "Intro. Sue finds a £1,000 week in Lanzarote, due in 30 days. Jar has £23.50.",
+   "options": {
+    "A": "Car boot sale (sell garage junk): +£, HOUSE up, Alfie may lose toys",
+    "B": "Dave takes weekend repair jobs: +££, Dave tired, happiness down",
+    "C": "Ellie sells her old clothes online: +£, Ellie happy"
+   },
+   "post_uuid": null,
+   "tiktok_video_id": null,
+   "votes": null,
+   "winner": null
+  }
+ ]
+}
