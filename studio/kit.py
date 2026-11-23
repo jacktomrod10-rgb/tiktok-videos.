@@ -220,25 +220,96 @@ def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, spee
     json.dump(timing, open(os.path.join(out_dir, "timing.json"), "w"), indent=1)
     return timing
 
-def make_audio(out_dir, total):
-    import soundfile as sf
-    sr = 44100
+SR = 44100
+
+def _env(n, a=0.005, d=0.3, sr=SR):
+    t = np.arange(n) / sr
+    return np.minimum(1, t / max(a, 1e-4)) * np.exp(-t / max(d, 1e-4))
+
+def sfx(kind, sr=SR):
+    """Synthesised sound effects: pop, whoosh, cash, ding, boing, thud."""
+    rng = np.random.default_rng(7)
+    if kind == "pop":
+        n = int(0.09 * sr); t = np.arange(n) / sr
+        f = 900 * np.exp(-t * 30) + 300
+        return 0.6 * np.sin(2 * np.pi * np.cumsum(f) / sr) * _env(n, 0.002, 0.03)
+    if kind == "whoosh":
+        n = int(0.45 * sr); t = np.arange(n) / sr
+        noise = rng.standard_normal(n)
+        k = np.exp(-((t - 0.22) / 0.12) ** 2)
+        # crude band-pass sweep: running mean difference
+        lo = np.convolve(noise, np.ones(6) / 6, "same"); hi = np.convolve(noise, np.ones(40) / 40, "same")
+        return 0.35 * (lo - hi) * k
+    if kind == "cash":
+        out = []
+        for f0, d0 in ((2093, 0.25), (2637, 0.5)):
+            n = int(d0 * sr); t = np.arange(n) / sr
+            out.append(0.35 * (np.sin(2 * np.pi * f0 * t) + 0.4 * np.sin(2 * np.pi * f0 * 2.01 * t)) * _env(n, 0.002, d0 / 3))
+        click = 0.4 * rng.standard_normal(int(0.02 * sr)) * _env(int(0.02 * sr), 0.001, 0.005)
+        return np.concatenate([click, out[0], out[1]])
+    if kind == "ding":
+        n = int(0.8 * sr); t = np.arange(n) / sr
+        return 0.4 * (np.sin(2 * np.pi * 1318.5 * t) + 0.3 * np.sin(2 * np.pi * 2637 * t)) * _env(n, 0.002, 0.25)
+    if kind == "boing":
+        n = int(0.35 * sr); t = np.arange(n) / sr
+        f = 220 + 160 * np.sin(2 * np.pi * 9 * t) * np.exp(-t * 6)
+        return 0.5 * np.sin(2 * np.pi * np.cumsum(f) / sr) * _env(n, 0.003, 0.15)
+    if kind == "thud":
+        n = int(0.25 * sr); t = np.arange(n) / sr
+        f = 120 * np.exp(-t * 12) + 45
+        return 0.8 * np.sin(2 * np.pi * np.cumsum(f) / sr) * _env(n, 0.002, 0.08)
+    return np.zeros(1)
+
+def music(total, style="pad", sr=SR):
     t = np.arange(int(total * sr)) / sr
-    chords = [[130.81, 164.81, 196.00, 246.94], [110.00, 130.81, 164.81, 196.00],
-              [87.31, 130.81, 164.81, 220.00], [98.00, 123.47, 146.83, 164.81]]
-    pad = np.zeros_like(t)
-    seg = 8.0
-    for i in range(int(np.ceil(total / seg)) + 1):
-        env = np.clip(1 - np.abs((t - (i * seg + seg / 2)) / (seg * 0.75)), 0, 1) ** 1.5
-        for f in chords[i % 4]:
-            pad += (np.sin(2 * np.pi * f * t) + np.sin(2 * np.pi * f * 1.003 * t) + 0.3 * np.sin(4 * np.pi * f * t)) * env
-    pad *= (0.6 + 0.4 * np.sin(2 * np.pi * 0.15 * t)) * np.clip(np.minimum(t / 1.0, (total - t) / 1.5), 0, 1)
-    pad /= np.max(np.abs(pad)) + 1e-9
-    sf.write(os.path.join(out_dir, "pad.wav"), (pad * 0.5).astype(np.float32), sr)
+    out = np.zeros_like(t)
+    if style == "pluck":
+        # bouncy major-key arpeggio with a soft bass: I - V - vi - IV, 104 bpm eighth notes
+        beat = 60 / 104 / 2
+        prog_ = [[261.63, 329.63, 392.00, 523.25], [196.00, 246.94, 293.66, 392.00],
+                 [220.00, 261.63, 329.63, 440.00], [174.61, 220.00, 261.63, 349.23]]
+        n_steps = int(total / beat) + 1
+        nl = int(0.35 * sr)
+        tt = np.arange(nl) / sr
+        for i in range(n_steps):
+            ch = prog_[(i // 8) % 4]
+            f = ch[[0, 2, 1, 3, 2, 1, 3, 2][i % 8]]
+            tone = (np.sin(2 * np.pi * f * tt) + 0.35 * np.sin(4 * np.pi * f * tt)) * _env(nl, 0.003, 0.09)
+            a = int(i * beat * sr)
+            seg = out[a:a + nl]; seg += tone[:len(seg)] * 0.5
+            if i % 4 == 0:
+                fb = ch[0] / 2
+                bl = int(0.5 * sr); tb = np.arange(bl) / sr
+                bass = np.sin(2 * np.pi * fb * tb) * _env(bl, 0.005, 0.25)
+                seg2 = out[a:a + bl]; seg2 += bass[:len(seg2)] * 0.6
+    else:
+        chords = [[130.81, 164.81, 196.00, 246.94], [110.00, 130.81, 164.81, 196.00],
+                  [87.31, 130.81, 164.81, 220.00], [98.00, 123.47, 146.83, 164.81]]
+        seg = 8.0
+        for i in range(int(np.ceil(total / seg)) + 1):
+            env = np.clip(1 - np.abs((t - (i * seg + seg / 2)) / (seg * 0.75)), 0, 1) ** 1.5
+            for f in chords[i % 4]:
+                out += (np.sin(2 * np.pi * f * t) + np.sin(2 * np.pi * f * 1.003 * t) + 0.3 * np.sin(4 * np.pi * f * t)) * env
+        out *= (0.6 + 0.4 * np.sin(2 * np.pi * 0.15 * t))
+    out *= np.clip(np.minimum(t / 1.0, (total - t) / 1.5), 0, 1)
+    return out / (np.max(np.abs(out)) + 1e-9)
+
+def make_audio(out_dir, total, style="pad", cues=()):
+    import soundfile as sf
+    m = music(total, style)
+    fx = np.zeros(int(total * SR) + SR)
+    for tc, kind in cues:
+        clip = sfx(kind)
+        a = int(max(0, tc) * SR)
+        seg = fx[a:a + len(clip)]; seg += clip[:len(seg)]
+    fx = fx[:len(m)]
+    sf.write(os.path.join(out_dir, "music.wav"), (m * 0.5).astype(np.float32), SR)
+    sf.write(os.path.join(out_dir, "sfx.wav"), np.clip(fx, -1, 1).astype(np.float32), SR)
+    mvol = "0.13" if style == "pluck" else "0.11"
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", os.path.join(out_dir, "voice.wav"),
-                    "-i", os.path.join(out_dir, "pad.wav"), "-filter_complex",
-                    "[0:a]aresample=44100,highpass=f=70[v];[1:a]lowpass=f=1800,volume=0.11[m];"
-                    "[v][m]amix=inputs=2:duration=longest:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[a]",
+                    "-i", os.path.join(out_dir, "music.wav"), "-i", os.path.join(out_dir, "sfx.wav"), "-filter_complex",
+                    f"[0:a]aresample=44100,highpass=f=70[v];[1:a]lowpass=f=3000,volume={mvol}[m];[2:a]volume=0.32[x];"
+                    "[v][m][x]amix=inputs=3:duration=longest:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11[a]",
                     "-map", "[a]", "-ar", "44100", "-c:a", "aac", "-b:a", "192k",
                     os.path.join(out_dir, "mix.m4a")], check=True)
 
@@ -295,10 +366,15 @@ def caption_img(words):
 
 # ---------------- the video ----------------
 class Video:
-    def __init__(self, slug, lines, display, episode=1, series=SERIES, voice=None, voice_lang=None):
+    def __init__(self, slug, lines, display, episode=1, series=SERIES, voice=None, voice_lang=None,
+                 music="pad", camera=True, vignette=True):
         assert len(lines) == len(display), "lines and display must have the same count"
         self.slug, self.lines, self.display, self.episode, self.series = slug, lines, display, episode, series
         self.voice, self.voice_lang = voice, voice_lang
+        self.music, self.camera, self.vignette = music, camera, vignette
+        self.cues = []            # (seconds, kind) sound effects; scene changes get a whoosh automatically
+        self.fixed_fns = []       # drawn in the top band (y < 330), not moved by the camera
+        self._vig = None
         self.dir = os.path.join(BUILD_ROOT, slug)
         os.makedirs(self.dir, exist_ok=True)
         self.scenes = []          # (first_line, last_line, fn)
@@ -313,6 +389,20 @@ class Video:
             self.scenes.sort(key=lambda s: s[0])
             return fn
         return deco
+
+    def fixed(self, fn):
+        """Decorator: fn(p, t) draws in the top band (y < 330) and is not zoomed by the camera."""
+        self.fixed_fns.append(fn)
+        return fn
+
+    def sounds(self, fn):
+        """Decorator: fn(L) returns [(seconds, kind), ...] sound cues, computed from the voice timing."""
+        self.cue_fn = fn
+        return fn
+
+    def cue(self, t, kind):
+        """Add a sound effect at time t: pop, whoosh, cash, ding, boing, thud."""
+        self.cues.append((t, kind))
 
     @property
     def timing(self):
@@ -353,10 +443,38 @@ class Video:
                 alpha = min(fi, fo)
                 break
         small = layer.reduce(S)
+        if self.camera:
+            # slow push-in per scene, alternating zoom centre for variety
+            z, cx, cy = 1.0, 540, 760
+            for k, (s0, s1, fn) in enumerate(B):
+                if s0 <= t < s1 or (k == len(B) - 1 and t >= s0):
+                    z = 1.0 + 0.045 * eio(prog(t, s0, s1))
+                    cx = 540 + (30 if k % 2 else -30) * prog(t, s0, s1)
+                    cy = 760
+                    break
+            if z > 1.001:
+                w, h = W / z, H / z
+                x0 = min(max(0.0, cx - w / 2), W - w)
+                y0 = min(max(0.0, cy - h * (cy / H)), H - h)
+                box = (x0, y0, x0 + w, y0 + h)
+                small = small.resize((W, H), Image.BILINEAR, box=box)
         if alpha < 1:
             small.putalpha(small.getchannel("A").point(lambda v: int(v * alpha)))
         img = self._bg.copy()
         img.paste(small, (0, 0), small)
+        if self.fixed_fns:
+            band = Image.new("RGBA", (W * S, 330 * S), (0, 0, 0, 0))
+            bp = Pen(band)
+            for fn in self.fixed_fns: fn(bp, t)
+            bs = band.reduce(S)
+            img.paste(bs, (0, 0), bs)
+        if self.vignette:
+            if self._vig is None:
+                yy, xx = np.mgrid[0:H, 0:W]
+                d = np.sqrt(((xx - 540) / 700) ** 2 + ((yy - 760) / 1000) ** 2)
+                a = (np.clip(d - 0.55, 0, 1) * 150).astype(np.uint8)
+                self._vig = Image.fromarray(np.dstack([np.zeros_like(a)] * 3 + [a]), "RGBA")
+            img = img.convert("RGBA"); img.alpha_composite(self._vig); img = img.convert("RGB")
         return self._overlay(img, t)
 
     def _overlay(self, img, t):
@@ -408,7 +526,10 @@ class Video:
     def render(self, out_path=None):
         B = self.bounds()
         files = [self._render_scene(k, s0, s1) for k, (s0, s1, _) in enumerate(B)]
-        make_audio(self.dir, self.timing["total"])
+        cues = [(s0, "whoosh") for (s0, s1, fn) in B[1:]] + list(self.cues)
+        if getattr(self, "cue_fn", None):
+            cues += list(self.cue_fn(self.L))
+        make_audio(self.dir, self.timing["total"], self.music, cues)
         lst = os.path.join(self.dir, "list.txt")
         open(lst, "w").write("".join(f"file '{f}'\n" for f in files))
         vid = os.path.join(self.dir, "video_only.mp4")

@@ -9,7 +9,7 @@ DAY = 1
 FUND = 23.50
 
 V = Video(
-    "pennys-ep01", episode=DAY, series="THE PENNYS", voice=P.NARRATOR,
+    "pennys-ep01", episode=DAY, series="THE PENNYS", voice=P.NARRATOR, music="pluck",
     lines=[
         "This family has never been on holiday. Not once.",
         "Meet the Pennys. This is Dave. He fixes washing machines, and he's never been further than Skegness.",
@@ -47,7 +47,20 @@ OPTIONS = [("A", "Car boot sale", "+£   HOUSE +   ALFIE'S TOYS?"),
            ("C", "Ellie sells clothes online", "+£   ELLIE HAPPY")]
 
 def top(p, t):
+    pass   # the HUD is drawn by hud_band below, outside the camera move
+
+@V.fixed
+def hud_band(p, t):
     P.hud(p, DAY, FUND)
+
+@V.sounds
+def sounds(L):
+    a5 = L(5)[0]; a6 = L(6)[0]; a8 = L(8)[0]; a11 = L(11)[0]; a12 = L(12)[0]
+    out = [(0.6, "pop"), (a5 + 0.2, "boing"), (a6 + 0.8, "ding"), (L(7)[0] + 0.5, "boing"),
+           (a8 + 0.4, "pop"), (a8 + 3.6, "cash"), (a12 + 0.1, "pop"), (a12 + 3.0, "ding")]
+    out += [(a11 - 0.4 + 0.6 + i * 2.7, "pop") for i in range(3)]
+    out += [(L(i)[0] + 0.3, "pop") for i in (2, 3, 4)]
+    return out
 
 @V.scene(0)
 def hook(p, t, L):
