@@ -204,7 +204,7 @@ def _pitch(samples, sr, factor):
         out, _ = sf.read(b, dtype="float32")
     return out
 
-def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, speed=None, cast=None):
+def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, speed=None, cast=None, holds=None):
     """lines: str (narrator) or (speaker, text). cast: {speaker: dict(voice, lang, speed, pitch)}."""
     voice, lang, speed = voice or VOICE, lang or VOICE_LANG, speed or VOICE_SPEED
     cast = cast or {}
@@ -241,8 +241,9 @@ def synth_lines(lines, out_dir, gap=0.30, lead=0.15, voice=None, lang=None, spee
                 run = 0
         info.append({"i": i, "speaker": speaker, "text": text, "start": round(t, 3), "dur": round(dur, 3),
                      "phonemes": k.tokenizer.phonemize(text, lg), "env": env, "pauses": pauses})
-        chunks += [samples, np.zeros(int(gap * sr), dtype=np.float32)]
-        t += dur + gap
+        g = gap + (holds or {}).get(i, 0.0)     # holds: extra silence after line i (music-only moments)
+        chunks += [samples, np.zeros(int(g * sr), dtype=np.float32)]
+        t += dur + g
     voice = np.concatenate([np.zeros(int(lead * sr_out), dtype=np.float32)] + chunks)
     sf.write(os.path.join(out_dir, "voice.wav"), voice, sr_out)
     timing = {"sr": sr_out, "total": round(len(voice) / sr_out, 3), "lines": info}
@@ -461,13 +462,14 @@ def _title_img(text):
 # ---------------- the video ----------------
 class Video:
     def __init__(self, slug, lines, display, episode=1, series=SERIES, voice=None, voice_lang=None,
-                 music="pad", camera=True, vignette=True, cast=None, speaker_colours=None, title=None):
+                 music="pad", camera=True, vignette=True, cast=None, speaker_colours=None, title=None, holds=None):
         assert len(lines) == len(display), "lines and display must have the same count"
         self.slug, self.lines, self.display, self.episode, self.series = slug, lines, display, episode, series
         self.voice, self.voice_lang = voice, voice_lang
         self.music, self.camera, self.vignette = music, camera, vignette
         self.cast, self.speaker_colours = cast or {}, speaker_colours or {}
         self.title = title          # persistent headline under the series tag (explainers)
+        self.holds = holds or {}    # {line index: extra seconds of silence after it}
         self.cues = []            # (seconds, kind) sound effects; scene changes get a whoosh automatically
         self.fixed_fns = []       # drawn in the top band (y < 330), not moved by the camera
         self._vig = None
@@ -598,7 +600,8 @@ class Video:
         total = self.timing["total"]
         d.rounded_rectangle([80, 150, 1000, 158], radius=4, fill=(40, 58, 84))
         d.rounded_rectangle([80, 150, 80 + 920 * clamp(t / total), 158], radius=4, fill=YEL)
-        d.text((80, 182), f"{self.series}  ·  #{self.episode:02d}", font=self._tag_font, fill=MUTED)
+        tag = self.series if self.episode is None else f"{self.series}  ·  #{self.episode:02d}"
+        d.text((80, 182), tag, font=self._tag_font, fill=MUTED)
         if self.title:
             if not hasattr(self, "_title_img"):
                 self._title_img = _title_img(self.title)
@@ -621,7 +624,7 @@ class Video:
 
     # ---- outputs ----
     def tts(self):
-        timing = synth_lines(self.lines, self.dir, voice=self.voice, lang=self.voice_lang, cast=self.cast)
+        timing = synth_lines(self.lines, self.dir, voice=self.voice, lang=self.voice_lang, cast=self.cast, holds=self.holds)
         self._timing = timing
         for li in timing["lines"]:
             print(f"[{li['start']:6.2f} +{li['dur']:5.2f}] {li['text']}\n           /{li['phonemes']}/")
