@@ -7,28 +7,30 @@ V = Video(
     lines=[
         "Check the zip on your jacket. It probably says Y K K.",
         "By one estimate, those three letters are on about half the zips on Earth.",
-        "They stand for Yoshida Kohg yoh Kabooshiki guysha. Roughly, Yoshida Manufacturing Company.",
-        "It was started in Tokyo in nineteen thirty-four, by a young man called Tadao Yoshida.",
+        "The letters come from its Japanese name, roughly, Yoshida Manufacturing Company.",
+        "It started in Tokyo, in nineteen thirty-four.",
         "Today it makes more than seven billion zips a year.",
         "And here's the genius. Most companies buy in their parts. Y K K makes almost everything itself.",
         "It melts its own brass, makes its own polyester, spins its own thread, and weaves and dyes its own tape.",
         "It even builds the machines that make the zips, and keeps them hidden from competitors.",
         "Controlling every step means every zip comes out the same, again and again.",
         "And for clothing brands, that matters. A zip is a tiny part of the cost, but if it breaks, the whole jacket is useless.",
-        "So next time a zip just works, you know who to thank. Follow for more everyday genius.",
+        "So next time a zip just works, you know who to thank. Now go and check. How many of your zips say Y K K? Tell me in the comments.",
+        "Follow for more everyday genius.",
     ],
     display=[
         "Check the *zip* on your jacket. It probably says *YKK*.",
         "By one estimate, those three letters are on about *half* the zips on Earth.",
-        "They stand for *Yoshida Kogyo Kabushikigaisha*. Roughly, Yoshida Manufacturing Company.",
-        "It was started in *Tokyo* in *1934*, by a young man called Tadao Yoshida.",
+        "The letters come from its *Japanese* name, roughly, *Yoshida Manufacturing Company*.",
+        "It started in *Tokyo*, in *1934*.",
         "Today it makes more than *7 billion* zips a year.",
         "And here's the *genius*. Most companies buy in their parts. YKK makes almost *everything* itself.",
         "It melts its own *brass*, makes its own *polyester*, spins its own *thread*, and weaves and dyes its own *tape*.",
         "It even builds the *machines* that make the zips, and keeps them *hidden* from competitors.",
         "Controlling every step means every zip comes out the *same*, again and again.",
         "And for clothing brands, that matters. A zip is a *tiny* part of the cost, but if it breaks, the whole jacket is *useless*.",
-        "So next time a zip just works, you know who to *thank*. Follow for more everyday *genius*.",
+        "So next time a zip just works, you know who to *thank*. Now go and check. How many of *your* zips say *YKK*? Tell me in the *comments*.",
+        "Follow for more everyday *genius*.",
     ],
 )
 
@@ -78,16 +80,16 @@ def name_and_origin(p, t, L):
     if t < a3:
         words = [("Y", "YOSHIDA"), ("K", "KOGYO"), ("K", "KABUSHIKIGAISHA")]
         for i, (letter, word) in enumerate(words):
-            y = 500 + i * 190
+            y = 400 + i * 170
             k = eback(prog(t, a2 + 0.2 + i * 0.6, a2 + 0.6 + i * 0.6))
             if k > 0:
                 p.text((200, y), letter, f2("anton", max(10, int(150 * k))), YEL)
                 p.text((300, y + 8), word, f2("dm", 50), WHITE, anchor="lm")
-        pill(p, 540, 1100, "YOSHIDA MANUFACTURING CO.", prog(t, a2 + 3.4, a2 + 3.8), bg=WHITE, size=36)
+        pill(p, 540, 960, "YOSHIDA MANUFACTURING CO.", prog(t, a2 + 2.4, a2 + 2.8), bg=WHITE, size=40)
     else:
         big_number(p, t, a3 + 0.6, 1934, cy=640, start=1900, dur=1.0)
         pill(p, 540, 430, "TOKYO", prog(t, a3, a3 + 0.4))
-        pill(p, 540, 860, "FOUNDER: TADAO YOSHIDA", prog(t, a3 + 2.6, a3 + 3.0), bg=WHITE)
+        pill(p, 540, 860, "FOUNDER: TADAO YOSHIDA", prog(t, a3 + 1.2, a3 + 1.6), bg=WHITE)
 
 @V.scene(4)
 def billions(p, t, L):
@@ -155,19 +157,32 @@ def consistency(p, t, L):
             cross(p, 540, 760, 110, prog(t, a9 + 4.6, a9 + 4.8), shake_t=t - (a9 + 4.6))
             pill(p, 540, 360, "BROKEN ZIP = USELESS JACKET", prog(t, a9 + 4.7, a9 + 5.1), bg=RED, fg=WHITE)
 
-@V.scene(10)
+@V.scene(10, 11)
 def outro(p, t, L):
-    a, _ = L(10)
+    a, _ = L(10); a11, _ = L(11)
     k = eio(prog(t, a + 0.2, a + 2.2))
     zip_v(p, 540, 330, 1150, lerp(1050, 420, k))
     if t > a + 2.3:
         sparkle(p, 700, 420, 40 * eback(prog(t, a + 2.3, a + 2.7)))
-    fp = prog(t, a + 3.6, a + 4.0)
+        p.circle(540, 520, 105 + 10 * pulse(t, 0.8), outline=YEL, width=8)
+    # spoken comment question
+    q = prog(t, a + 3.6, a + 4.0)
+    if q > 0:
+        pill(p, 540, 900 - 6 * pulse(t, 1.2), "HOW MANY OF YOURS SAY YKK?", q, bg=YEL, fg=INK, size=46)
+    if t > a + 5.4:
+        bp = eback(prog(t, a + 5.4, a + 5.8))
+        bx, by = 300, 1060
+        p.rr([bx - 110 * bp, by - 55 * bp, bx + 110 * bp, by + 55 * bp], 28 * bp, fill=WHITE)
+        p.poly([(bx - 40 * bp, by + 50 * bp), (bx - 70 * bp, by + 95 * bp), (bx - 5 * bp, by + 50 * bp)], fill=WHITE)
+        for i in range(3):
+            d = 10 * bp * (1 + 0.35 * pulse(t - i * 0.2, 0.9))
+            p.circle(bx - 50 * bp + i * 50 * bp, by, d, fill=INK)
+    fp = prog(t, a11 + 0.1, a11 + 0.5)
     if fp > 0:
         r = 58 * eback(fp)
-        p.circle(820, 1000, r, fill=RED)
-        p.line([(820 - r * .45, 1000), (820 + r * .45, 1000)], fill=WHITE, width=12)
-        p.line([(820, 1000 - r * .45), (820, 1000 + r * .45)], fill=WHITE, width=12)
+        p.circle(820, 1080, r, fill=RED)
+        p.line([(820 - r * .45, 1080), (820 + r * .45, 1080)], fill=WHITE, width=12)
+        p.line([(820, 1080 - r * .45), (820, 1080 + r * .45)], fill=WHITE, width=12)
 
 if __name__ == "__main__":
     V.main()
