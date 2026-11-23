@@ -30,13 +30,17 @@ votes, winner and post IDs). Read it first, and update it at the end of every ru
    day 30, but never guaranteed. Then set up today's new problem or opportunity and write 3 new options,
    each with a clear trade-off.
 6. **Write the episode** as `series/pennys/epNN/make.py`, copying the structure of `series/pennys/ep01/make.py`
+   (a `SCRIPT` list of `(speaker, spoken text, caption text)`; speakers are `narrator`, `dave`, `sue`, `ellie`,
+   `alfie`; each has their own voice from `P.CAST` and caption colour from `P.SPEAKER_COLOURS`; pass `talk=V.talk(t, "<who>")`
+   to a character so their mouth moves when they speak; the HUD goes in `@V.fixed`; sound effects in `@V.sounds`)
    and using `studio/pennys.py` (room, characters with moods and poses, `hud`, `stats_panel`, `vote_card`,
    `result_bars`, `money_pop`, `jar`, `phone_card`). 60–75 seconds:
    - Open with a **title card** for the first ~2.4 s (copy the slide-away card in ep01's `hook` scene), e.g.
      "DAY N" / "£X TO GO" / one punchy line about today's drama. The first two seconds decide whether people stay.
    - Hook (1 line): "Yesterday, you voted ___" plus a cliffhanger.
    - Show the vote result with `result_bars` and the percentages.
-   - Play out the outcome with the characters (2–4 lines), `money_pop` for money in or out, and the updated `hud`.
+   - Play out the outcome with the characters (2–4 lines, mostly **dialogue**: give every family member at
+     least one short, funny line per episode, in character), `money_pop` for money in or out, and the updated `hud`.
    - Introduce today's problem (1–2 lines), the new `vote_card` (options read out as "A: …, B: …, or C: …"),
      then end with the family on screen and "Comment A, B or C. Day N+1 tomorrow." Use the HUD with the
      *new* fund.

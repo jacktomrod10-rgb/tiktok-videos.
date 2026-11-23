@@ -32,6 +32,10 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
    - Line 1 is the hook, 10 words or fewer, a surprising claim ("X is secretly genius", "You've been
      using X wrong", "There's a reason X is Y").
    - Last line ends with "Follow for more everyday genius."
+   - Pass `title="<the question the video answers, with 1–2 *highlighted* words>"` to `Video(...)`: it shows as a
+     headline under the series tag for the whole video (see `videos/2026-11-23-microwave-door/make.py`).
+   - Captions are automatic: word-by-word highlight, timed to the voice's pauses. Keep `display` punctuation
+     matching `lines` so the timing lines up.
    - `lines` = what the voice says: write numbers, years and units as words ("nineteen forty-seven",
      "thirteen amps"). `display` = the captions: digits allowed, mark 1–3 key words per line with `*word*`.
 5. **Voice.** `python3 -I videos/<dir>/make.py tts`. Read the printed phonemes; if a word or number is
@@ -53,7 +57,7 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
     {"autoPublish": true, "descendants": [], "draft": false, "firstCommentText": "", "hasNotReadNotes": false,
      "media": ["<raw URL>"], "mediaAltText": [], "providers": [{"network": "tiktok"}],
      "publicationDate": {"dateTime": "<YYYY-MM-DD>T19:00:00", "timezone": "Europe/London"},
-     "shortener": false, "smartLinkData": {"ids": []},
+     "shortener": false, "smartLinkData": {"ids": []}, "videoCoverMilliseconds": 1500,
      "text": "<hook sentence>. <question for comments>? #howitworks #everydaygenius #<topic> #<topic> #learnontiktok · AI voiceover",
      "tiktokData": {"disableComment": false, "disableDuet": false, "disableStitch": false,
                     "privacyOption": "PUBLIC_TO_EVERYONE", "commercialContentThirdParty": false,

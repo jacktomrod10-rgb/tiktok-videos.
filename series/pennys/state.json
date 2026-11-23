@@ -23,7 +23,7 @@
    "options": {
     "A": "Car boot sale (sell garage junk): +£, HOUSE up, Alfie may lose toys",
     "B": "Dave takes weekend repair jobs: +££, Dave tired, happiness down",
-    "C": "Ellie sells her old clothes online: +£, Ellie happy"
+    "C": "Ellie sells her old clothes online: +£, Ellie NOT happy ('Not my clothes!')"
    },
    "post_uuid": "-8234459280307696908",
    "tiktok_video_id": null,
@@ -32,5 +32,19 @@
    "posted": "2026-11-23T19:00 Europe/London"
   }
  ],
- "narrator_voice": "bm_fable"
+ "narrator_voice": "bm_fable",
+ "cast_voices": {
+  "narrator": "bm_fable",
+  "dave": "bm_george (pitch 0.86)",
+  "sue": "bf_emma",
+  "ellie": "bf_isabella (pitch 1.06)",
+  "alfie": "bf_lily (pitch 1.38)"
+ },
+ "running_jokes": [
+  "Dave: went to Skegness once, it rained",
+  "Sue: nobody leaves the group chat",
+  "Ellie: 'I'm literally listening' (never looks up)",
+  "Alfie: wants to BE a kangaroo",
+  "Crumbs: eats TV remotes"
+ ]
 }
