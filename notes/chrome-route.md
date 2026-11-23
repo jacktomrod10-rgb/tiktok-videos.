@@ -4,6 +4,10 @@ Works through the Claude in Chrome extension on the owner's PC (Google Chrome, s
 @how.its.genius). The built-in browser in the Claude app does NOT work: TikTok's page blocks fetching
 files from other sites (CSP), and the pane blocks popups opened by Claude.
 
+**Check the account first.** The owner's Chrome was also signed in to a different TikTok account (@donut.wired).
+Before uploading, open https://www.tiktok.com/profile in a new tab and confirm it redirects to @how.its.genius.
+If it doesn't, stop and ask the owner to switch accounts. Never post to another account.
+
 Steps that worked:
 1. Make an upload copy of 3.3 MB or less (the Chrome upload tool's limit is about 3.8 MB). Two-pass x264 at
    the bitrate that gives about 3.3e6 bytes, AAC 96k. It looks the same as the original for these flat
