@@ -32,6 +32,8 @@ votes, winner and post IDs). Read it first, and update it at the end of every ru
 6. **Write the episode** as `series/pennys/epNN/make.py`, copying the structure of `series/pennys/ep01/make.py`
    and using `studio/pennys.py` (room, characters with moods and poses, `hud`, `stats_panel`, `vote_card`,
    `result_bars`, `money_pop`, `jar`, `phone_card`). 60–75 seconds:
+   - Open with a **title card** for the first ~2.4 s (copy the slide-away card in ep01's `hook` scene), e.g.
+     "DAY N" / "£X TO GO" / one punchy line about today's drama. The first two seconds decide whether people stay.
    - Hook (1 line): "Yesterday, you voted ___" plus a cliffhanger.
    - Show the vote result with `result_bars` and the percentages.
    - Play out the outcome with the characters (2–4 lines), `money_pop` for money in or out, and the updated `hud`.
@@ -46,7 +48,8 @@ votes, winner and post IDs). Read it first, and update it at the end of every ru
    `createScheduledPost` with the same `info` template as CLAUDE.md, at 13:00 today (one hour from now if
    it's later), with:
    `"text": "The Pennys, Day N: <one-line hook>. Comment A, B or C! #thepennys #youdecide #storytime #familylife #animation · AI voiceover"`
-   and `"title": "The Pennys · Day N"`. Keep `isAigc` false and the `· AI voiceover` ending.
+   and `"title": "The Pennys · Day N"`, plus `"videoCoverMilliseconds": 1300` so the title card is the cover.
+   Keep `isAigc` false and the `· AI voiceover` ending.
 9. **Save the story.** Update `state.json`: day = N, fund, stats, the previous episode's `votes` and `winner`,
    and a new episode entry (day, summary, options, post_uuid). Commit and push.
 10. **Tell the owner.** `SendUserMessage`: yesterday's vote result, what happened, the new fund, and "Day N
