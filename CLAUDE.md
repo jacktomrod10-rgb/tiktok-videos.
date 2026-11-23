@@ -62,10 +62,20 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
     - The caption is one line (TikTok drops line breaks) and **must end with `· AI voiceover`**. The owner
       chose this caption disclosure instead of TikTok's AI badge, so keep `isAigc` false.
     - If Metricool returns a plan or post-limit error, don't retry. Tell the owner (step 12).
+    - **Monthly limit check first:** count this calendar month's published and scheduled posts with
+      `getScheduledPosts`. On the free plan (20 a month), if 19 or more are already used, skip today's explainer
+      (The Pennys episode has priority) and tell the owner they need Metricool's paid plan or the Chrome route
+      to keep posting twice a day.
 11. **Log it.** Tick the topic in `topics.md` with the date, episode number and Metricool `uuid`. Commit and push.
 12. **Tell the owner.** `SendUserMessage`: the title, "posts at 19:00", the Metricool `plannerUrl`, and a note
     that they can delete it there before then if they don't like it. Then `SendUserFile` the mp4.
     If anything failed, post nothing broken: send one message saying what failed and what's needed.
+
+## The Pennys (second series on this account)
+
+A separate daily run makes the interactive family series at 13:00; its instructions are in
+`series/pennys/SERIES.md`. The explainer posts at 19:00, so the two don't clash. Don't edit `series/` from
+the explainer run.
 
 ## Content rules
 
