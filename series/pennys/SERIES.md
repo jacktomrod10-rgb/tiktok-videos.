@@ -34,8 +34,8 @@ votes, winner and post IDs). Read it first, and update it at the end of every ru
    `alfie`; each has their own voice from `P.CAST` and caption colour from `P.SPEAKER_COLOURS`; pass `talk=V.talk(t, "<who>")`
    to a character so their mouth moves when they speak; the HUD goes in `@V.fixed`; sound effects in `@V.sounds`)
    and using `studio/pennys.py` (room, characters with moods and poses, `hud`, `stats_panel`, `vote_card`,
-   `result_bars`, `money_pop`, `jar`, `phone_card`). 63–75 seconds, never under 62 s: only videos over
-   1 minute earn from Creator Rewards (see THE GOAL in the repo's CLAUDE.md):
+   `result_bars`, `money_pop`, `jar`, `phone_card`). Keep it short for now: about 30–45 seconds (the owner,
+   24 Nov 2026; see THE GOAL in the repo's CLAUDE.md). Go back to over 62 s only when the owner says so:
    - Open with a **title card** for the first ~2.4 s (copy the slide-away card in ep01's `hook` scene), e.g.
      "DAY N" / "£X TO GO" / one punchy line about today's drama. The first two seconds decide whether people stay.
    - Hook (1 line): "Yesterday, you voted ___" plus a cliffhanger.
