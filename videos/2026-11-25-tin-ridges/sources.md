@@ -1,0 +1,8 @@
+# Sources: Why food tins have ridges (episode 7, short, for 07:00 on 25 Nov 2026)
+
+| Claim in the video | Source(s) |
+| --- | --- |
+| The ridges (beads) stiffen the thin metal wall so the tin resists denting and crushing | Food Republic: https://www.foodrepublic.com/1516548/why-canned-goods-ribbed/ ("It strengthens the can's walls"); Sciencing: https://www.sciencing.com/1908738/why-canned-food-containers-are-ribbed/ ("helps them to resist denting"); US patent 3,335,902 (Continental Can): https://patents.google.com/patent/US3335902A/en (beading "to resist external distorting stresses") |
+| Without them, stacked tins would crumple under the weight | Sciencing (stacked pallets would crumple "under their own weight"); Food Republic (unpressurised tins "need supportive ridges before they can get stacked and shipped"); US 3,335,902 ("resistance of the can to crushing under high can stacking conditions") |
+| Food tins are heated after sealing to sterilise the food; the ridges help the walls cope with the heat and pressure | Sciencing ("the heat and external pressure caused by boiling the cans to sterilize them"); Food Republic (ridges "allow the cylinder to expand and shrink during the intense process"); USDA FSIS container handling: https://www.fsis.usda.gov/sites/default/files/media_file/2022-02/19-Container-Handling.pdf (container vacuum and pressure during processing and cooling) |
+| Drinks cans are smooth because the fizz inside pressurises them, which keeps them stiff | Sciencing ("the carbonation of the beverage creates a great deal of internal pressure. This pressure strengthens the can"); Food Republic ("sodas have a high internal pressure that gives them quite a boost in strength") |
