@@ -9,8 +9,8 @@ Take the first unticked topic. When it's scheduled, tick it like this:
 - [x] noise-cancelling — How noise-cancelling headphones delete sound  (made 2026-11-23, NOT POSTED: saved as a Metricool draft, uuid 3657041485181570589) (microphones and an opposite "anti-noise" wave)
 - [x] ykk-zips — Why so many zips say "YKK"  (2026-11-23 · #03 · uuid 8991087088207416827)
 - [x] qr-torn — How a QR code still works when part of it is torn off (error correction)  (2026-11-24 · #04 · uuid -6778793300140408340)
-- [ ] fridge-cold — How a fridge makes cold by moving heat out (refrigerant evaporating and condensing)
-- [ ] barcode — How a barcode is read in a split second
+- [x] fridge-cold — How a fridge makes cold by moving heat out (refrigerant evaporating and condensing)  (2026-11-24 · #05 · uuid -8165872184060264178, short, 14:00 bonus post)
+- [x] barcode — How a barcode is read in a split second  (2026-11-24 · #06 · uuid 2729219518234054414, short, 16:00 bonus post)
 - [ ] tin-ridges — Why food tins have ridges
 - [ ] touchscreen — How a touchscreen knows where your finger is (capacitive grid)
 - [ ] bubble-wrap — Bubble wrap was invented as wallpaper

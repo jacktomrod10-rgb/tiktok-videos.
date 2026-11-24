@@ -1,4 +1,8 @@
-# Posting through Chrome (tested 23 Nov 2026)
+# Posting through Chrome (tested 23 Nov 2026) — RETIRED 24 Nov 2026
+
+**Don't use this route.** On 24 Nov the videos posted this way (07:00, 09:00, 11:00) still had 0 views hours later,
+while the same day's Metricool posts had 45–50 views within about 12 minutes ("In this town" was reposted through
+Metricool at 13:04 after the owner deleted the Chrome copy). Post everything through Metricool.
 
 Works through the Claude in Chrome extension on the owner's PC (Google Chrome, signed in to TikTok as
 @how.its.genius). The built-in browser in the Claude app does NOT work: TikTok's page blocks fetching
