@@ -6,7 +6,7 @@ video, publishes the file here, and schedules it on TikTok through Metricool.
 
 ## THE GOAL: earn $25 a month from TikTok (set by the owner, 23 Nov 2026)
 
-$25 a month pays for Metricool's paid plan, so the account pays for itself. The route is TikTok's
+$25 a month pays for Metricool's paid plan (the owner subscribed to Starter on 24 Nov 2026), so the account pays for itself. The route is TikTok's
 **Creator Rewards Program**, which needs (TikTok newsroom + programme terms, checked 23 Nov 2026):
 - **10,000 followers** and **100,000 video views in the last 30 days**, all authentic.
 - A **personal account** in good standing in an eligible country (the UK is). The owner doesn't want a Business
@@ -25,7 +25,7 @@ analytics log shows it.
 | GitHub repo | `jacktomrod10-rgb/tiktok-videos.` (the name ends with a dot) — clone to `/home/claude/tiktok-videos._` |
 | Public file URL | `https://raw.githubusercontent.com/jacktomrod10-rgb/tiktok-videos./main/videos/<file>.mp4` |
 | Metricool | brand/blogId `8305380`, timezone `Europe/London`, TikTok account linked (jackrodgers102) |
-| Metricool plan | Free: **20 published posts per calendar month**, resets on the 1st |
+| Metricool plan | **Starter (paid) since 24 Nov 2026**: no monthly post cap (Metricool's fair-use policy applies). Before that: Free, 20 posts a month |
 | Post time | **19:00 Europe/London**, same day as the run (if it's already past 18:30, use one hour from now) |
 | Voice | Kokoro `bm_george` (British male, chosen by the owner), set in `studio/kit.py` |
 | Stats (optional) | Windsor connector `tiktok_organic`, account `_000od0_ziCgbX4rS4Lw3KlPBn_Doym-UYGw` (read-only) |
@@ -86,10 +86,9 @@ analytics log shows it.
     - The caption is one line (TikTok drops line breaks) and **must end with `· AI voiceover`**. The owner
       chose this caption disclosure instead of TikTok's AI badge, so keep `isAigc` false.
     - If Metricool returns a plan or post-limit error, don't retry. Tell the owner (step 12).
-    - **Monthly limit check first:** count this calendar month's published and scheduled posts with
-      `getScheduledPosts`. On the free plan (20 a month), if 19 or more are already used, skip today's explainer
-      (The Pennys episode has priority) and tell the owner they need Metricool's paid plan or the Chrome route
-      to keep posting twice a day.
+    - **Plan:** the account has been on Metricool Starter (no monthly post cap) since 24 Nov 2026, so there's no
+      20-a-month count any more. If Metricool returns a plan or post-limit error, the plan may have lapsed: don't
+      retry, and tell the owner.
 11. **Log it.** Tick the topic in `topics.md` with the date, episode number and Metricool `uuid`. Commit and push.
 12. **Tell the owner.** `SendUserMessage`: the title, "posts at 19:00", the Metricool `plannerUrl`, and a note
     that they can delete it there before then if they don't like it. Then `SendUserFile` the mp4.

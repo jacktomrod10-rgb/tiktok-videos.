@@ -48,8 +48,8 @@ votes, winner and post IDs). Read it first, and update it at the end of every ru
    - Same rules as CLAUDE.md for `lines` (numbers as words) and `display` (digits and `*highlights*`), and for
      checking stills before rendering.
 7. **Render** to `videos/pennys-epNN.mp4`, look at 3–4 frames, then commit and push. Confirm the raw URL returns 200.
-8. **Check the monthly limit, then schedule.** Count this calendar month's published and scheduled posts
-   with `getScheduledPosts`. If the free plan's 20 are used up, don't schedule; tell the owner. Otherwise use
+8. **Schedule.** Metricool is on the Starter plan (no monthly post cap) since 24 Nov 2026. If it returns a plan
+   or post-limit error, don't retry; tell the owner. Use
    `createScheduledPost` with the same `info` template as CLAUDE.md, at 13:00 today (one hour from now if
    it's later), with:
    `"text": "The Pennys, Day N: <one-line hook>. Comment A, B or C! #thepennys #youdecide #storytime #familylife #animation · AI voiceover"`
