@@ -3,11 +3,11 @@
  "goal": 1000,
  "days": 30,
  "destination": "Australia (3 weeks); the £1,000 is the deposit, due in 30 days",
- "day": 1,
- "fund": 23.5,
+ "day": 2,
+ "fund": 88.0,
  "stats": {
-  "happiness": 50,
-  "house": 22
+  "happiness": 55,
+  "house": 40
  },
  "characters": {
   "dave": "Dad, 41, fixes washing machines, furthest trip Skegness, moustache, blue overalls",
@@ -26,10 +26,28 @@
     "C": "Ellie sells her old clothes online: +£, Ellie NOT happy ('Not my clothes!')"
    },
    "post_uuid": "-8234459280307696908",
+   "tiktok_video_id": "7711444640439880982",
+   "votes": {
+    "A": 1,
+    "B": 0,
+    "C": 0
+   },
+   "winner": "A",
+   "posted": "2026-11-23T19:00 Europe/London"
+  },
+  {
+   "day": 2,
+   "summary": "Vote A (1-0-0): car boot sale. Sold £78 of garage junk, -£10 pitch fee, -£3.50 because Crumbs ate a customer's bacon roll: +£64.50, fund £88.00. Alfie sold his dinosaurs ('I'm a kangaroo person now'), Ellie went undercover in sunglasses. Happiness 50->55, house 22->40 (garage empty). Cliffhanger: back home Crumbs buried the car keys in the garden; Dave needs the car for work tomorrow at 8am.",
+   "options": {
+    "A": "Dig up the whole garden: free, HOUSE down, might not find the keys",
+    "B": "Buy a new key: -£80, sorted",
+    "C": "Dave rides to work on Alfie's tiny bike: free, Dave tired, happiness down"
+   },
+   "post_uuid": "8743027434317170884",
    "tiktok_video_id": null,
    "votes": null,
    "winner": null,
-   "posted": "2026-11-23T19:00 Europe/London"
+   "posted": "2026-11-24T13:00 Europe/London"
   }
  ],
  "narrator_voice": "bm_fable",
@@ -45,6 +63,7 @@
   "Sue: nobody leaves the group chat",
   "Ellie: 'I'm literally listening' (never looks up)",
   "Alfie: wants to BE a kangaroo",
-  "Crumbs: eats TV remotes"
+  "Crumbs: eats TV remotes",
+  "Ellie: 'If anyone from school sees me...' (undercover sunglasses)"
  ]
 }
