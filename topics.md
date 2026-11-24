@@ -11,7 +11,7 @@ Take the first unticked topic. When it's scheduled, tick it like this:
 - [x] qr-torn — How a QR code still works when part of it is torn off (error correction)  (2026-11-24 · #04 · uuid -6778793300140408340)
 - [x] fridge-cold — How a fridge makes cold by moving heat out (refrigerant evaporating and condensing)  (2026-11-24 · #05 · uuid -8165872184060264178, short, 14:00 bonus post)
 - [x] barcode — How a barcode is read in a split second  (2026-11-24 · #06 · uuid 2729219518234054414, short, 16:00 bonus post)
-- [ ] tin-ridges — Why food tins have ridges
+- [x] tin-ridges — Why food tins have ridges  (2026-11-25 07:00 · #07 · uuid 3752781112604377993, short, made the evening before)
 - [ ] touchscreen — How a touchscreen knows where your finger is (capacitive grid)
 - [ ] bubble-wrap — Bubble wrap was invented as wallpaper
 - [ ] pin-tumbler — How a key opens a lock (pin tumbler)
