@@ -11,9 +11,9 @@ $25 a month pays for Metricool's paid plan (the owner subscribed to Starter on 2
 - **10,000 followers** and **100,000 video views in the last 30 days**, all authentic.
 - A **personal account** in good standing in an eligible country (the UK is). The owner doesn't want a Business
   account, and that's correct for this programme anyway. Never suggest switching.
-- Only videos **at least 1 minute long** earn. **For now, though, keep videos short** (owner, 24 Nov 2026): about
-  30–45 s, to win views and followers first. Short videos don't earn from Creator Rewards; go back to over 62 s
-  only when the owner says so.
+- Only videos **at least 1 minute long** earn. **Length is flexible for now** (owner, 24 Nov 2026): short videos
+  (about 30–45 s) are fine, and so are videos over a minute. Pick what suits the topic: a single fast fact can be
+  short; a topic with enough for a minute should run over 62 s so it can earn later.
 
 Every decision serves this: hooks and retention that win followers, one strong video a day in each series,
 and nothing that risks the account (no fake engagement, no rewards for likes or follows, no copied content,
@@ -45,8 +45,9 @@ analytics log shows it.
    `videos/<YYYY-MM-DD>-<slug>/sources.md` (claim → URL).
 4. **Write the script** as `videos/<YYYY-MM-DD>-<slug>/make.py`, copying the structure of
    `examples/uk_plug.py`:
-   - Target **30–45 seconds** of speech for now: about 80–120 words in 5–8 lines (the owner wants them short for the
-     moment; see THE GOAL). One idea, told fast: hook, the surprising fact, two or three supporting beats, comment ask, follow.
+   - Length is flexible (see THE GOAL): either **short, 30–45 s** (about 80–120 words in 5–8 lines: hook, the surprising
+     fact, two or three supporting beats, comment ask, follow) or **long, 63–75 s** (about 180–200 words in 8–12 lines).
+     Never between 46 and 62 s: too long to be snappy, too short to earn.
    - Line 1 is the hook, 10 words or fewer, a surprising claim ("X is secretly genius", "You've been
      using X wrong", "There's a reason X is Y").
    - Line 2 must be the most surprising concrete fact, said straight away. No "the answer is…" or
@@ -62,8 +63,8 @@ analytics log shows it.
    - `lines` = what the voice says: write numbers, years and units as words ("nineteen forty-seven",
      "thirteen amps"). `display` = the captions: digits allowed, mark 1–3 key words per line with `*word*`.
 5. **Voice.** `python3 -I videos/<dir>/make.py tts`. Read the printed phonemes; if a word or number is
-   mispronounced, respell it in `lines` and rerun. Check the TOTAL is 28–48 s. If it's longer, cut a line; don't speed up the voice.
-6. **Visuals.** One `@V.scene(...)` per idea, 3–5 scenes, using the kit (`Pen`, `pill`, `tick`, `cross`,
+   mispronounced, respell it in `lines` and rerun. Check the TOTAL is 28–48 s (short) or 62–80 s (long). Fix it by adding or cutting a line, not by changing the voice speed.
+6. **Visuals.** One `@V.scene(...)` per idea, 3–5 scenes for a short video or 4–7 for a long one, using the kit (`Pen`, `pill`, `tick`, `cross`,
    `sparkle`, `big_number`, `flow_dots`, `bar_chart`, `arrow`). Rules:
    - Draw simple flat diagrams of the thing being explained; something should move at all times.
    - Keep everything inside x 60–1000, y 300–1150 (captions live around y 1270, the top bar above 300).
