@@ -26,7 +26,8 @@ analytics log shows it.
 | Public file URL | `https://raw.githubusercontent.com/jacktomrod10-rgb/tiktok-videos./main/videos/<file>.mp4` |
 | Metricool | brand/blogId `8305380`, timezone `Europe/London`, TikTok account linked (jackrodgers102) |
 | Metricool plan | **Starter (paid) since 24 Nov 2026**: no monthly post cap (Metricool's fair-use policy applies). Before that: Free, 20 posts a month |
-| Post time | **19:00 Europe/London**, same day as the run (if it's already past 18:30, use one hour from now) |
+| Post time | **19:00 Europe/London** (morning run) and **16:00** (second run, added 24 Nov 2026), same day as the run (if it's already within 30 min of the slot or past it, use one hour from now) |
+| Posting route | **Metricool only.** The Chrome / TikTok Studio route is retired (24 Nov 2026): the format tests posted that way showed 0 views after several hours. Don't use it unless the owner asks |
 | Voice | Kokoro `bm_george` (British male, chosen by the owner), set in `studio/kit.py` |
 | Stats (optional) | Windsor connector `tiktok_organic`, account `_000od0_ziCgbX4rS4Lw3KlPBn_Doym-UYGw` (read-only) |
 
