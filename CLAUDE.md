@@ -118,4 +118,8 @@ The owner's separate "TikTok analytics team" chat adds each day's stats at midni
 tools: `read` with ref `{"object":"project","id":"37JKLVeXi2CuAdtBPofn7s"}`, then read its tab).
 - Before writing the script (step 4), read that doc's findings and "Next video" sections if the docs tools are
   available, and apply what it recommends where it fits these rules. If it can't be read, carry on without it.
-- Don't edit that doc, and don't pull analytics yourself. `notes/performance.md` keeps the day-1 lessons.
+- Don't edit that doc, and don't pull analytics yourself (no Windsor or Metricool stats calls). The owner, 24 Nov 2026:
+  this chat makes the TikToks; for any numbers, ask the "TikTok analytics team" chat. Read the log doc first; if it
+  doesn't answer the question, message that chat with SendMessage when ListAgents shows it, otherwise tell the owner
+  what you'd like the analytics team to check. (Exception: The Pennys run still reads comments to count A/B/C votes.)
+  `notes/performance.md` keeps the day-1 lessons.
