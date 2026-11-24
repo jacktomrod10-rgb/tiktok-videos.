@@ -8,7 +8,7 @@ Take the first unticked topic. When it's scheduled, tick it like this:
 - [x] microwave-door — Why your microwave doesn't cook you  (2026-11-23 · #02 · uuid -2404431812184291648) (the metal mesh in the door: holes smaller than the wavelength)
 - [x] noise-cancelling — How noise-cancelling headphones delete sound  (made 2026-11-23, NOT POSTED: saved as a Metricool draft, uuid 3657041485181570589) (microphones and an opposite "anti-noise" wave)
 - [x] ykk-zips — Why so many zips say "YKK"  (2026-11-23 · #03 · uuid 8991087088207416827)
-- [ ] qr-torn — How a QR code still works when part of it is torn off (error correction)
+- [x] qr-torn — How a QR code still works when part of it is torn off (error correction)  (2026-11-24 · #04 · uuid -6778793300140408340)
 - [ ] fridge-cold — How a fridge makes cold by moving heat out (refrigerant evaporating and condensing)
 - [ ] barcode — How a barcode is read in a split second
 - [ ] tin-ridges — Why food tins have ridges
