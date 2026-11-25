@@ -456,6 +456,67 @@ def _wweight(w):
     core = w.replace("*", "")
     return len(core) + 2 + (4 if core[-1:] in ".,!?:;" else 0)
 
+_PUNCT = ".,!?:;"
+
+def _phrases(words):
+    """Split a word list into phrases that end at punctuation."""
+    out, cur = [], []
+    for w in words:
+        cur.append(w)
+        if w.replace("*", "")[-1:] in _PUNCT:
+            out.append(cur); cur = []
+    if cur: out.append(cur)
+    return out
+
+def _speech_bounds(li):
+    """(start, end) of audible speech inside a line's clip, from its 30 fps loudness envelope.
+    The clip keeps ~0.3-0.6 s of near-silence at the end; timing words over it made captions lag."""
+    env, d = li.get("env") or [], li["dur"]
+    soft = [j for j, e in enumerate(env) if e > 0.06]
+    loud = [j for j, e in enumerate(env) if e > 0.12]
+    if not soft or not loud: return 0.0, d
+    a = max(0.0, (soft[0] - 0.5) / 30)
+    b = min(d, (loud[-1] + 2.5) / 30)
+    return (a, b) if b > a + 0.3 else (0.0, d)
+
+def _phrase_spans(li, phrases):
+    """(start, end) of each caption phrase within the line, relative to the line start.
+    Breaks are estimated from the spoken phonemes, then snapped to a real gap in the audio when one is close."""
+    import re
+    a, b = _speech_bounds(li)
+    n = len(phrases)
+    if n == 1: return [(a, b)], a, b
+    parts = [q for q in re.split(r"(?<=[.,!?:;])\s+", (li.get("phonemes") or "").strip()) if q.strip()]
+    if len(parts) == n:
+        wts = [sum(1 for ch in q if ch not in "ˈˌ ") + 3 for q in parts]
+    else:
+        wts = [sum(_wweight(w) for w in ph) for ph in phrases]
+    env = li.get("env") or []
+    gaps, run = [], 0                    # quiet runs of 2+ frames inside the speech
+    for j, e in enumerate(env):
+        if e < 0.06: run += 1
+        else:
+            if run >= 2 and (j - run) / 30 > a + 0.1 and j / 30 < b - 0.1:
+                gaps.append(((j - run) / 30, j / 30))
+            run = 0
+    tol = max(0.3, 0.12 * (b - a))
+    tw, acc, prev = sum(wts), 0.0, a
+    edges = [a]
+    for k in range(n - 1):
+        acc += wts[k]
+        est = a + (b - a) * acc / tw
+        best = None
+        for g0, g1 in gaps:
+            mid = (g0 + g1) / 2
+            if g0 > prev + 0.12 and abs(mid - est) <= tol and (best is None or abs(mid - est) < abs((best[0] + best[1]) / 2 - est)):
+                best = (g0, g1)
+        if best: edges += [best[0], best[1]]; prev = best[1]
+        else:
+            est = max(est, prev + 0.12)
+            edges += [est, est]; prev = est
+    edges.append(max(b, prev + 0.12))
+    return [(edges[2 * k], edges[2 * k + 1]) for k in range(n)], a, b
+
 def build_chunks(display, lines_info, total):
     """Caption chunks of up to 4 words, each with per-word timings (proportional to word length)."""
     out = []
@@ -469,34 +530,20 @@ def build_chunks(display, lines_info, total):
         if cur:
             if groups and len(cur) == 1: groups[-1] += cur
             else: groups.append(cur)
-        s0, d = lines_info[i]["start"], lines_info[i]["dur"]
-        # phrases end at punctuation; align phrase breaks with real pauses in the audio when they match
-        phrases, curp = [], []
-        for w in words:
-            curp.append(w)
-            if w.replace("*", "")[-1:] in ".,!?:;":
-                phrases.append(curp); curp = []
-        if curp: phrases.append(curp)
-        pauses = sorted(lines_info[i].get("pauses") or [], key=lambda q: q[1] - q[0], reverse=True)
-        nb = len(phrases) - 1
-        spans = None
-        if nb > 0 and len(pauses) >= nb:
-            use = sorted(pauses[:nb])
-            edges = [0.0] + [x for q in use for x in q] + [d]
-            spans = [(edges[2 * k], edges[2 * k + 1]) for k in range(nb + 1)]
-            if any(b <= a for a, b in spans): spans = None
-        if spans is None:
-            tw = sum(_wweight(w) for w in words)
-            spans, acc = [], 0.0
-            for ph in phrases:
-                dd = d * sum(_wweight(w) for w in ph) / tw
-                spans.append((acc, acc + dd)); acc += dd
+        li = lines_info[i]
+        s0 = li["start"]
+        phrases = _phrases(words)
+        spans, a0, b0 = _phrase_spans(li, phrases)
+        sp_phr = _phrases((li.get("text") or "").split())
         word_t = []
-        for ph, (a, b) in zip(phrases, spans):
-            tw = sum(_wweight(w) for w in ph)
+        for pi, (ph, (a, b)) in enumerate(zip(phrases, spans)):
+            # word weights: the spoken words when they line up 1:1 ("Eight" for "*8"), else the caption words
+            spw = sp_phr[pi] if len(sp_phr) == len(phrases) and len(sp_phr[pi]) == len(ph) else None
+            ws = [_wweight(w) for w in (spw or ph)]
+            tw = sum(ws)
             t = s0 + a
-            for w in ph:
-                dd = (b - a) * _wweight(w) / tw
+            for wgt in ws:
+                dd = (b - a) * wgt / tw
                 word_t.append((t, t + dd)); t += dd
         k = 0
         for g in groups:
