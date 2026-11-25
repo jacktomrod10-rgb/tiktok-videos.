@@ -3,11 +3,11 @@
  "goal": 1000,
  "days": 30,
  "destination": "Australia (3 weeks); the £1,000 is the deposit, due in 30 days",
- "day": 2,
+ "day": 3,
  "fund": 88.0,
  "stats": {
-  "happiness": 55,
-  "house": 40
+  "happiness": 50,
+  "house": 25
  },
  "characters": {
   "dave": "Dad, 41, fixes washing machines, furthest trip Skegness, moustache, blue overalls",
@@ -44,10 +44,28 @@
     "C": "Dave rides to work on Alfie's tiny bike: free, Dave tired, happiness down"
    },
    "post_uuid": "8743027434317170884",
+   "tiktok_video_id": "7711723757194235158",
+   "votes": {
+    "A": 2,
+    "B": 0,
+    "C": 0
+   },
+   "winner": "A",
+   "posted": "2026-11-24T13:00 Europe/London"
+  },
+  {
+   "day": 3,
+   "summary": "Vote A (2-0-0): dug up the garden overnight. Sue split it into a string grid and logged squares in the group chat, Ellie's phone was the torch (9% battery), Alfie tried to dig to Australia. At 1am they found a sock, a tennis ball and Crumbs' 3 missing TV remotes (he buries them). 7:50am, 14 holes, no keys; then Crumbs sniffed one spot and dug them up in 10 seconds. Dave made it to work with 2 minutes to spare. Cost £0, fund stays £88.00. Happiness 55->50 (no sleep), house 40->25 (14 holes). New problem: the garden looks like the moon and the neighbours are staring; Alfie suggests crazy golf.",
+   "options": {
+    "A": "Fill every hole back in: free, HOUSE up, takes Dave's day off (happiness down)",
+    "B": "Crazy golf for the street at £2 a round: +£, garden stays a mess, Ellie mortified ('I'm moving to the moon')",
+    "C": "Pay a gardener: -£60, HOUSE way up"
+   },
+   "post_uuid": "-8110327036394451224",
    "tiktok_video_id": null,
    "votes": null,
    "winner": null,
-   "posted": "2026-11-24T13:00 Europe/London"
+   "posted": "2026-11-25T13:00 Europe/London"
   }
  ],
  "narrator_voice": "bm_fable",
@@ -64,6 +82,8 @@
   "Ellie: 'I'm literally listening' (never looks up)",
   "Alfie: wants to BE a kangaroo",
   "Crumbs: eats TV remotes",
-  "Ellie: 'If anyone from school sees me...' (undercover sunglasses)"
+  "Ellie: 'If anyone from school sees me...' (undercover sunglasses)",
+  "Crumbs buries things: the 3 'eaten' TV remotes were in the garden",
+  "The garden has 14 holes ('looks like the moon')"
  ]
 }
