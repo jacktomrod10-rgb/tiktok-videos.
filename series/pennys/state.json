@@ -3,18 +3,19 @@
  "goal": 1000,
  "days": 30,
  "destination": "Australia (3 weeks); the £1,000 is the deposit, due in 30 days",
- "day": 3,
- "fund": 88.0,
+ "day": 4,
+ "fund": 28.0,
  "stats": {
-  "happiness": 50,
-  "house": 25
+  "happiness": 55,
+  "house": 65
  },
  "characters": {
   "dave": "Dad, 41, fixes washing machines, furthest trip Skegness, moustache, blue overalls",
   "sue": "Mum, 40, runs the house, the budget and the family group chat, curly red hair, glasses, pink cardigan",
   "ellie": "15, glued to her phone, purple hoodie, long dark hair",
   "alfie": "8, dreams of seeing a real kangaroo, spiky blond hair, green koala t-shirt",
-  "crumbs": "the dog, has eaten three TV remotes this year"
+  "crumbs": "the dog, has eaten three TV remotes this year",
+  "bev": "the gardener from down the street, grey curls, orange bobble hat, green jumper, wellies; non-speaking so far"
  },
  "episodes": [
   {
@@ -62,10 +63,29 @@
     "C": "Pay a gardener: -£60, HOUSE way up"
    },
    "post_uuid": "-8110327036394451224",
+   "tiktok_video_id": "7712094570279882006",
+   "votes": {
+    "A": 0,
+    "B": 0,
+    "C": 0
+   },
+   "winner": "C",
+   "posted": "2026-11-25T13:00 Europe/London",
+   "vote_rule": "no votes: random (Crumbs chose)"
+  },
+  {
+   "day": 4,
+   "summary": "No votes (0-0-0), so Crumbs chose: he sat on C, pay a gardener £60. 9am Bev the gardener arrived with a wheelbarrow and a very big spade. Dave: '£60? I could have done that myself!' Sue: 'You fell asleep in your cornflakes.' Two hours: 14 holes filled, grass seed down. Neighbours stopped staring (Ellie relieved), Alfie mourned his tunnel to Australia. -£60: fund £88.00 -> £28.00 (nearly back to day 1's £23.50). House 25->65, happiness 50->55. Twist: Bev spotted Dave's overalls; her washing machine has been broken for a month. Dave: 'That's my thing!'",
+   "options": {
+    "A": "Fix it for free as a thank you: £0, happiness up, Bev owes them one",
+    "B": "Charge Bev £40: +£40, a bit awkward",
+    "C": "Sue advertises Dave's repairs in the street group chat (94 people): £30 a job, uncertain how many, Dave's evenings gone"
+   },
+   "post_uuid": "3725271652651057573",
    "tiktok_video_id": null,
    "votes": null,
    "winner": null,
-   "posted": "2026-11-25T13:00 Europe/London"
+   "posted": "2026-11-26T13:00 Europe/London"
   }
  ],
  "narrator_voice": "bm_fable",
@@ -84,6 +104,10 @@
   "Crumbs: eats TV remotes",
   "Ellie: 'If anyone from school sees me...' (undercover sunglasses)",
   "Crumbs buries things: the 3 'eaten' TV remotes were in the garden",
-  "The garden has 14 holes ('looks like the moon')"
+  "The garden has 14 holes ('looks like the moon')",
+  "When nobody votes, Crumbs chooses (he sat on C on day 4)",
+  "Bev the gardener's washing machine (broken a month); Dave: 'Washing machines? That's my thing!'",
+  "The street group chat has 94 people. Nobody leaves.",
+  "Dave fell asleep in his cornflakes"
  ]
 }
