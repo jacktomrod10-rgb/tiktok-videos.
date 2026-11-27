@@ -3,19 +3,20 @@
  "goal": 1000,
  "days": 30,
  "destination": "Australia (3 weeks); the £1,000 is the deposit, due in 30 days",
- "day": 4,
- "fund": 28.0,
+ "day": 5,
+ "fund": 133.0,
  "stats": {
-  "happiness": 55,
+  "happiness": 45,
   "house": 65
  },
  "characters": {
   "dave": "Dad, 41, fixes washing machines, furthest trip Skegness, moustache, blue overalls",
   "sue": "Mum, 40, runs the house, the budget and the family group chat, curly red hair, glasses, pink cardigan",
   "ellie": "15, glued to her phone, purple hoodie, long dark hair",
-  "alfie": "8, dreams of seeing a real kangaroo, spiky blond hair, green koala t-shirt",
+  "alfie": "8, dreams of seeing a real kangaroo, spiky blond hair, green koala t-shirt; plays the kangaroo in his school play (kangaroo-ear costume)",
   "crumbs": "the dog, has eaten three TV remotes this year",
-  "bev": "the gardener from down the street, grey curls, orange bobble hat, green jumper, wellies; non-speaking so far"
+  "bev": "the gardener from down the street, grey curls, orange bobble hat, green jumper, wellies; non-speaking so far",
+  "launderette": "the launderette on the high street: 10 broken machines, offered Dave £200 (non-speaking, seen only as a chat message)"
  },
  "episodes": [
   {
@@ -82,10 +83,29 @@
     "C": "Sue advertises Dave's repairs in the street group chat (94 people): £30 a job, uncertain how many, Dave's evenings gone"
    },
    "post_uuid": "3725271652651057573",
+   "tiktok_video_id": "7712465910862236950",
+   "votes": {
+    "A": 1,
+    "B": 0,
+    "C": 2
+   },
+   "winner": "C",
+   "posted": "2026-11-26T13:00 Europe/London",
+   "vote_rule": "most votes"
+  },
+  {
+   "day": 5,
+   "summary": "Vote C (2-1-0): Sue posted Dave's repairs (£30 a job) in the street group chat (94 people). 5 bookings in 10 minutes; Sue made a colour-coded spreadsheet. Ellie: Dad got 37 mentions in the chat, she got 0 ('Literally embarrassing'). Dave worked door to door 6pm-11pm: Bev (No. 9) first, then Nos. 14, 22, 31 and 40. No. 40's machine was just unplugged ('That one wasn't broken. It was unplugged'), so no charge. 4 paid jobs x £30 = £120, minus £15 parts: +£105 (best night yet), fund £28.00 -> £133.00. Dave missed Alfie's bedtime story; Crumbs 'read' it and ate page 4. Happiness 55->45, house stays 65. Twist: the launderette on the high street offers £200 to fix 10 broken machines tomorrow at 2pm, the same time as Alfie's school play (he's the kangaroo). Dave: '£200? That's three trips to Skegness!'",
+   "options": {
+    "A": "Take the launderette job: +£200, Dave misses Alfie's school play (happiness down)",
+    "B": "Go to the play: £0, happiness up, turn down the £200",
+    "C": "Start at 6am and race back for 2pm: +£200 if he's quick, but one delay and he misses the play (risky)"
+   },
+   "post_uuid": "-7066572564046328423",
    "tiktok_video_id": null,
    "votes": null,
    "winner": null,
-   "posted": "2026-11-26T13:00 Europe/London"
+   "posted": "2026-11-27T13:00 Europe/London"
   }
  ],
  "narrator_voice": "bm_fable",
@@ -108,6 +128,12 @@
   "When nobody votes, Crumbs chooses (he sat on C on day 4)",
   "Bev the gardener's washing machine (broken a month); Dave: 'Washing machines? That's my thing!'",
   "The street group chat has 94 people. Nobody leaves.",
-  "Dave fell asleep in his cornflakes"
+  "Dave fell asleep in his cornflakes",
+  "Dave's repair round: £30 a job; No. 40's machine was just unplugged (no charge)",
+  "Sue's colour-coded spreadsheets",
+  "Street chat mentions: Dad 37, Ellie 0 ('Literally embarrassing')",
+  "Crumbs 'reads' bedtime stories (he ate page 4)",
+  "Alfie is the kangaroo in the school play",
+  "Skegness: Dave measures money in trips to Skegness (£200 = 3 trips; it rained)"
  ]
 }
