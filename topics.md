@@ -14,7 +14,7 @@ Take the first unticked topic. When it's scheduled, tick it like this:
 - [x] tin-ridges — Why food tins have ridges  (2026-11-25 07:00 · #07 · uuid 3752781112604377993, short, made the evening before)
 - [x] touchscreen — How a touchscreen knows where your finger is (capacitive grid)  (2026-11-25 · #08 · uuid -2206337761492316678, long 67 s, 19:00 post)
 - [x] bubble-wrap — Bubble wrap was invented as wallpaper  (2026-11-26 · #09 · uuid 6041627698337171546, long 73 s, 19:00 post)
-- [ ] pin-tumbler — How a key opens a lock (pin tumbler)
+- [x] pin-tumbler — How a key opens a lock (pin tumbler)  (2026-11-27 · #10 · uuid 7093505760621972968, long 72 s, 19:00 post)
 - [ ] cats-eyes — How the cat's eyes in the road work, and why they clean themselves
 - [ ] vacuum-flask — How a flask keeps drinks hot AND cold
 - [ ] manholes — Why manhole covers are round
