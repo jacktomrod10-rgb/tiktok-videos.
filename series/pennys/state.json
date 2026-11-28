@@ -3,20 +3,20 @@
  "goal": 1000,
  "days": 30,
  "destination": "Australia (3 weeks); the £1,000 is the deposit, due in 30 days",
- "day": 5,
- "fund": 133.0,
+ "day": 6,
+ "fund": 233.0,
  "stats": {
-  "happiness": 45,
+  "happiness": 60,
   "house": 65
  },
  "characters": {
   "dave": "Dad, 41, fixes washing machines, furthest trip Skegness, moustache, blue overalls",
   "sue": "Mum, 40, runs the house, the budget and the family group chat, curly red hair, glasses, pink cardigan",
-  "ellie": "15, glued to her phone, purple hoodie, long dark hair",
+  "ellie": "15, glued to her phone, purple hoodie, long dark hair; her best friend's birthday concert is next Saturday (£45 ticket)",
   "alfie": "8, dreams of seeing a real kangaroo, spiky blond hair, green koala t-shirt; plays the kangaroo in his school play (kangaroo-ear costume)",
   "crumbs": "the dog, has eaten three TV remotes this year",
   "bev": "the gardener from down the street, grey curls, orange bobble hat, green jumper, wellies; non-speaking so far",
-  "launderette": "the launderette on the high street: 10 broken machines, offered Dave £200 (non-speaking, seen only as a chat message)"
+  "launderette": "the launderette on the high street: 10 broken machines; another repairman fixed 5, Dave fixed the other 5 after the play for £20 each (non-speaking)"
  },
  "episodes": [
   {
@@ -102,10 +102,29 @@
     "C": "Start at 6am and race back for 2pm: +£200 if he's quick, but one delay and he misses the play (risky)"
    },
    "post_uuid": "-7066572564046328423",
+   "tiktok_video_id": "7712836688631958807",
+   "votes": {
+    "A": 0,
+    "B": 0,
+    "C": 0
+   },
+   "winner": "B",
+   "posted": "2026-11-27T13:00 Europe/London",
+   "vote_rule": "no A/B/C votes: random (Crumbs chose). One viewer wrote in 'D go at 5 am' and 'Or go after play'; the second idea was used as a twist"
+  },
+  {
+   "day": 6,
+   "summary": "No A/B/C votes (0-0-0), so Crumbs chose again: he sat on B, go to the play. Dave turned down the £200 ('Sorry! Kangaroo duty.'). Alfie on stage: 'Hop, hop, hop! I'm the best kangaroo in Year Four!' Dave: 'I'm not crying. It's the washing powder.' Ellie filmed it: 'Mum, do not put it in the group chat.' Sue: 'Too late. 94 people have seen it.' Twist from a real viewer comment ('Or go after play'): Dave rang the launderette; another repairman had already fixed half, so Dave fixed the other 5 until 9pm at £20 each: +£100, fund £133.00 -> £233.00 (£767 to go). Happiness 45->60, house stays 65. New problem: Ellie's best friend's birthday concert next Saturday, tickets £45; Ellie: 'If I miss it, I literally don't exist.' Alfie: 'Ellie, with no phone for a week? She'll explode!'",
+   "options": {
+    "A": "Pay from the holiday jar: -£45, Ellie happy (happiness up)",
+    "B": "Say no: £0, Ellie sulks (happiness down)",
+    "C": "Sponsored no-phone week: the street chat pays for the ticket, but only if Ellie lasts 7 days; fail = no concert"
+   },
+   "post_uuid": "-4770085757316677264",
    "tiktok_video_id": null,
    "votes": null,
    "winner": null,
-   "posted": "2026-11-27T13:00 Europe/London"
+   "posted": "2026-11-28T13:00 Europe/London"
   }
  ],
  "narrator_voice": "bm_fable",
@@ -134,6 +153,10 @@
   "Street chat mentions: Dad 37, Ellie 0 ('Literally embarrassing')",
   "Crumbs 'reads' bedtime stories (he ate page 4)",
   "Alfie is the kangaroo in the school play",
-  "Skegness: Dave measures money in trips to Skegness (£200 = 3 trips; it rained)"
+  "Skegness: Dave measures money in trips to Skegness (£200 = 3 trips; it rained)",
+  "Viewers' write-in ideas can change the story (Day 6: 'go after the play' won back £100)",
+  "Dave cries at school plays: 'It's the washing powder'",
+  "Sue posts everything in the street chat (Alfie's kangaroo video: 94 views)",
+  "Ellie: 'If I miss it, I literally don't exist'"
  ]
 }
