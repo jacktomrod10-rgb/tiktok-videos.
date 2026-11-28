@@ -15,7 +15,7 @@ Take the first unticked topic. When it's scheduled, tick it like this:
 - [x] touchscreen — How a touchscreen knows where your finger is (capacitive grid)  (2026-11-25 · #08 · uuid -2206337761492316678, long 67 s, 19:00 post)
 - [x] bubble-wrap — Bubble wrap was invented as wallpaper  (2026-11-26 · #09 · uuid 6041627698337171546, long 73 s, 19:00 post)
 - [x] pin-tumbler — How a key opens a lock (pin tumbler)  (2026-11-27 · #10 · uuid 7093505760621972968, long 72 s, 19:00 post)
-- [ ] cats-eyes — How the cat's eyes in the road work, and why they clean themselves
+- [x] cats-eyes — How the cat's eyes in the road work, and why they clean themselves  (2026-11-28 · #11 · uuid -86841758386272332, long 69 s, 19:00 post)
 - [ ] vacuum-flask — How a flask keeps drinks hot AND cold
 - [ ] manholes — Why manhole covers are round
 - [ ] gps — How your phone knows where you are (satellite timing)
